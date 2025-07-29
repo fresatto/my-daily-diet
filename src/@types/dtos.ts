@@ -21,3 +21,7 @@ export type DailyGoalRequest = {
 export type FoodsResponse = {
   foods: Food[];
 };
+
+export type MealsResponse = {
+  meals: Meal[];
+};

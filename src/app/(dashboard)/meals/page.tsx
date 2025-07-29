@@ -1,4 +1,6 @@
-import { Food } from "@/@types/dtos";
+"use client";
+
+import Link from "next/link";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,9 +12,12 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PencilIcon, TrashIcon } from "lucide-react";
+import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 
-import { Meal } from "@/@types/dtos";
+import { Meal, MealsResponse } from "@/@types/dtos";
+import { PageHeader } from "@/components/PageHeader";
+import { useQuery } from "@tanstack/react-query";
+import { api } from "@/services/api";
 
 const meals: Meal[] = [
   {
@@ -42,8 +47,26 @@ const meals: Meal[] = [
 ];
 
 export default function Meals() {
+  const { data } = useQuery({
+    queryKey: ["meals"],
+    queryFn: async () => {
+      const response = await api.get<MealsResponse>("/meals");
+
+      return response.data;
+    },
+  });
+
   return (
     <div>
+      <PageHeader
+        title="Refeições cadastradas"
+        action={
+          <Button>
+            <PlusIcon className="w-4 h-4" />
+            <Link href="/meals/create">Cadastrar refeição</Link>
+          </Button>
+        }
+      />
       <Table>
         <TableCaption>Todas as refeições cadastradas.</TableCaption>
         <TableHeader>
@@ -56,7 +79,7 @@ export default function Meals() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {meals.map((meal) => (
+          {data?.meals.map((meal) => (
             <TableRow key={meal.id}>
               <TableCell>{meal.food.name}</TableCell>
               <TableCell>
