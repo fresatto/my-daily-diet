@@ -13,3 +13,7 @@ export type Meal = {
   proteinConsumed: number;
   food: Omit<Food, "id">;
 };
+
+export type DailyGoalRequest = {
+  protein: number;
+};
