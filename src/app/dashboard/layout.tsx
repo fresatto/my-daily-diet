@@ -35,7 +35,7 @@ export default function DashboardLayout({
           </NavigationMenuItem>
         </NavigationMenuList>
       </NavigationMenu>
-      <div className="mx-auto max-w-7xl px-4">{children}</div>
+      <div className="mx-auto max-w-7xl w-full px-4">{children}</div>
     </div>
   );
 }

@@ -2,7 +2,7 @@ import { PropsWithChildren } from "react";
 import { cn } from "@/lib/utils";
 
 type TypographyProps = {
-  size?: "h1" | "p";
+  size?: "h1" | "h2" | "p";
   className?: string;
 } & PropsWithChildren;
 
@@ -15,7 +15,7 @@ export function Typography({
     return (
       <h1
         className={cn(
-          "scroll-m-20 text-center text-4xl font-extrabold tracking-tight text-balance",
+          "scroll-m-20 text-center text-4xl font-bold tracking-tight text-balance",
           className
         )}
       >
@@ -24,5 +24,18 @@ export function Typography({
     );
   }
 
-  return <p className="leading-7 [&:not(:first-child)]:mt-6">{children}</p>;
+  if (size === "h2") {
+    return (
+      <h2
+        className={cn(
+          "scroll-m-20 text-xl font-bold tracking-tight",
+          className
+        )}
+      >
+        {children}
+      </h2>
+    );
+  }
+
+  return <p className="leading-none">{children}</p>;
 }
