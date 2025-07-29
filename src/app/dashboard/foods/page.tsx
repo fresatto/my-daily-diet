@@ -46,7 +46,7 @@ export default function Foods() {
             <TableHead className="w-[100px]">Nome</TableHead>
             <TableHead>Tipo</TableHead>
             <TableHead>Quantidade (porção)</TableHead>
-            <TableHead className="text-right">Proteína (porção)</TableHead>
+            <TableHead>Proteína (porção)</TableHead>
             <TableHead className="text-right">Ações</TableHead>
           </TableRow>
         </TableHeader>
@@ -62,7 +62,7 @@ export default function Foods() {
                 </TableCell>
                 <TableCell>{food.portion_amount}</TableCell>
                 <TableCell>{food.protein_per_portion}</TableCell>
-                <TableCell>
+                <TableCell className="text-right">
                   <Button variant="ghost" size="icon">
                     <PencilIcon className="w-1 h-1" />
                   </Button>

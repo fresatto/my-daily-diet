@@ -66,7 +66,7 @@ export default function Meals() {
               </TableCell>
               <TableCell>{meal.amount}</TableCell>
               <TableCell>{meal.proteinConsumed}g</TableCell>
-              <TableCell>
+              <TableCell className="text-right">
                 <Button variant="ghost" size="icon">
                   <PencilIcon className="w-1 h-1" />
                 </Button>
