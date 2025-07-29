@@ -1,5 +1,4 @@
 import { Food } from "@/@types/dtos";
-import { Typography } from "@/components/Typography";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {

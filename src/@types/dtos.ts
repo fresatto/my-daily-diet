@@ -5,3 +5,11 @@ export type Food = {
   portion_amount: number;
   protein_per_portion: number;
 };
+
+export type Meal = {
+  id: string;
+  amount: number;
+  created_at: string;
+  proteinConsumed: number;
+  food: Omit<Food, "id">;
+};
