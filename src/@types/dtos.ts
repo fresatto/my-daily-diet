@@ -17,3 +17,7 @@ export type Meal = {
 export type DailyGoalRequest = {
   protein: number;
 };
+
+export type FoodsResponse = {
+  foods: Food[];
+};

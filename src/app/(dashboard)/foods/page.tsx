@@ -1,4 +1,9 @@
-import { Food } from "@/@types/dtos";
+"use client";
+
+import Link from "next/link";
+import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { Food, FoodsResponse } from "@/@types/dtos";
+import { PageHeader } from "@/components/PageHeader";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -10,35 +15,29 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PencilIcon, TrashIcon } from "lucide-react";
-
-const foods: Food[] = [
-  {
-    id: "1",
-    name: "Patinho",
-    portion_type: "grams",
-    portion_amount: 100,
-    protein_per_portion: 26,
-  },
-  {
-    id: "2",
-    name: "Frango",
-    portion_type: "unit",
-    portion_amount: 100,
-    protein_per_portion: 26,
-  },
-  {
-    id: "3",
-    name: "Carne",
-    portion_type: "grams",
-    portion_amount: 100,
-    protein_per_portion: 26,
-  },
-];
+import { api } from "@/services/api";
+import { useQuery } from "@tanstack/react-query";
 
 export default function Foods() {
+  const { data } = useQuery({
+    queryKey: ["foods"],
+    queryFn: async () => {
+      const response = await api.get<FoodsResponse>("/food");
+      return response.data;
+    },
+  });
+
   return (
     <div>
+      <PageHeader
+        title="Alimentos cadastrados"
+        action={
+          <Button>
+            <PlusIcon />
+            <Link href="/foods/create">Adicionar</Link>
+          </Button>
+        }
+      />
       <Table>
         <TableCaption>Todos os alimentos cadastrados.</TableCaption>
         <TableHeader>
@@ -51,7 +50,7 @@ export default function Foods() {
           </TableRow>
         </TableHeader>
         <TableBody>
-          {foods.map((food, index) => {
+          {data?.foods.map((food) => {
             return (
               <TableRow key={food.id}>
                 <TableCell>{food.name}</TableCell>
@@ -61,7 +60,7 @@ export default function Foods() {
                   </Badge>
                 </TableCell>
                 <TableCell>{food.portion_amount}</TableCell>
-                <TableCell>{food.protein_per_portion}</TableCell>
+                <TableCell>{food.protein_per_portion}g</TableCell>
                 <TableCell className="text-right">
                   <Button variant="ghost" size="icon">
                     <PencilIcon className="w-1 h-1" />
