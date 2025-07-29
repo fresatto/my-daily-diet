@@ -20,17 +20,17 @@ export default function DashboardLayout({
         <NavigationMenuList>
           <NavigationMenuItem>
             <NavigationMenuLink asChild>
-              <Link href="/dashboard/foods">Alimentos cadastrados</Link>
+              <Link href="/foods">Alimentos cadastrados</Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink asChild>
-              <Link href="/dashboard/meals">Refeições</Link>
+              <Link href="/meals">Refeições</Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink asChild>
-              <Link href="/dashboard/daily-goal">Objetivo diário</Link>
+              <Link href="/daily-goal">Objetivo diário</Link>
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
