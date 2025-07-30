@@ -3,9 +3,7 @@
 import {
   Select,
   SelectContent,
-  SelectGroup,
   SelectItem,
-  SelectLabel,
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
@@ -60,9 +58,7 @@ export default function CreateMeal() {
   });
 
   const onSubmit = (data: CreateMealSchema) => {
-    console.log(data);
-
-    // createMeal(data);
+    createMeal(data);
   };
 
   return (
@@ -79,9 +75,23 @@ export default function CreateMeal() {
             render={({ field }) => (
               <FormItem>
                 <FormLabel>Alimento</FormLabel>
-                <FormControl>
-                  <Input placeholder="Food Id" {...field} />
-                </FormControl>
+                <Select
+                  onValueChange={field.onChange}
+                  defaultValue={field.value}
+                >
+                  <FormControl>
+                    <SelectTrigger className="w-full">
+                      <SelectValue placeholder="Selecione um alimento" />
+                    </SelectTrigger>
+                  </FormControl>
+                  <SelectContent>
+                    {foodsData?.foods.map((food) => (
+                      <SelectItem key={food.id} value={food.id}>
+                        {food.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <FormMessage>{errors.food_id?.message}</FormMessage>
               </FormItem>
             )}
