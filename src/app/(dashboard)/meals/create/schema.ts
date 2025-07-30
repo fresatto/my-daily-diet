@@ -2,7 +2,7 @@ import { z } from "zod";
 
 export const createMealSchema = z.object({
   food_id: z.uuid("Alimento é obrigatório"),
-  amount: z.string().refine(
+  amount: z.number().refine(
     (value) => {
       const number = Number(value);
       return number > 10;

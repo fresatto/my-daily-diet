@@ -31,16 +31,10 @@ export default function CreateMeal() {
   const form = useForm<CreateMealSchema>({
     defaultValues: {
       food_id: "",
-      amount: "",
+      // amount: 0,
     },
     resolver: zodResolver(createMealSchema),
   });
-
-  const {
-    formState: { errors },
-    register,
-    handleSubmit,
-  } = form;
 
   const { mutate: createMeal } = useMutation({
     mutationFn: async (data: CreateMealSchema) => {
@@ -58,7 +52,7 @@ export default function CreateMeal() {
   });
 
   const onSubmit = (data: CreateMealSchema) => {
-    createMeal(data);
+    createMeal({ ...data, amount: Number(data.amount) });
   };
 
   return (
@@ -92,7 +86,9 @@ export default function CreateMeal() {
                     ))}
                   </SelectContent>
                 </Select>
-                <FormMessage>{errors.food_id?.message}</FormMessage>
+                <FormMessage>
+                  {form.formState.errors?.food_id?.message}
+                </FormMessage>
               </FormItem>
             )}
           />
@@ -103,9 +99,17 @@ export default function CreateMeal() {
               <FormItem>
                 <FormLabel>Quantidade</FormLabel>
                 <FormControl>
-                  <Input placeholder="Quantidade" {...field} />
+                  <Input
+                    placeholder="Quantidade"
+                    {...field}
+                    onChange={(e) => {
+                      field.onChange(Number(e.target.value));
+                    }}
+                  />
                 </FormControl>
-                <FormMessage>{errors.amount?.message}</FormMessage>
+                <FormMessage>
+                  {form.formState.errors?.amount?.message}
+                </FormMessage>
               </FormItem>
             )}
           />
