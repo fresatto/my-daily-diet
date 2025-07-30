@@ -10,6 +10,15 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+  FormMessage,
+} from "@/components/ui/form";
+
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "@tanstack/react-query";
 import { PageHeader } from "@/components/PageHeader";
@@ -21,13 +30,19 @@ import { Input } from "@/components/ui/input";
 import { FoodsResponse } from "@/@types/dtos";
 
 export default function CreateMeal() {
+  const form = useForm<CreateMealSchema>({
+    defaultValues: {
+      food_id: "",
+      amount: "",
+    },
+    resolver: zodResolver(createMealSchema),
+  });
+
   const {
     formState: { errors },
     register,
     handleSubmit,
-  } = useForm({
-    resolver: zodResolver(createMealSchema),
-  });
+  } = form;
 
   const { mutate: createMeal } = useMutation({
     mutationFn: async (data: CreateMealSchema) => {
@@ -45,42 +60,48 @@ export default function CreateMeal() {
   });
 
   const onSubmit = (data: CreateMealSchema) => {
-    createMeal(data);
+    console.log(data);
+
+    // createMeal(data);
   };
 
   return (
     <div>
-      <PageHeader title="Cadastrar alimento" />
-
-      <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
-        <Input placeholder="Alimento" {...register("food_id")} />
-        {errors.food_id && (
-          <small className="text-red-500">{errors.food_id.message}</small>
-        )}
-
-        <Input placeholder="Quantidade" {...register("amount")} />
-        {errors.amount && (
-          <small className="text-red-500">{errors.amount.message}</small>
-        )}
-
-        <Select>
-          <SelectTrigger className="w-full">
-            <SelectValue placeholder="Select a fruit" />
-          </SelectTrigger>
-          <SelectContent>
-            <SelectGroup>
-              <SelectLabel>Alimentos</SelectLabel>
-              {foodsData?.foods.map((food) => (
-                <SelectItem key={food.id} value={food.id}>
-                  {food.name}
-                </SelectItem>
-              ))}
-            </SelectGroup>
-          </SelectContent>
-        </Select>
-
-        <Button type="submit">Cadastrar refeição</Button>
-      </form>
+      <PageHeader title="Cadastrar refeição" />
+      <Form {...form}>
+        <form
+          onSubmit={form.handleSubmit(onSubmit)}
+          className="flex flex-col gap-4"
+        >
+          <FormField
+            control={form.control}
+            name="food_id"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Alimento</FormLabel>
+                <FormControl>
+                  <Input placeholder="Food Id" {...field} />
+                </FormControl>
+                <FormMessage>{errors.food_id?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+          <FormField
+            control={form.control}
+            name="amount"
+            render={({ field }) => (
+              <FormItem>
+                <FormLabel>Quantidade</FormLabel>
+                <FormControl>
+                  <Input placeholder="Quantidade" {...field} />
+                </FormControl>
+                <FormMessage>{errors.amount?.message}</FormMessage>
+              </FormItem>
+            )}
+          />
+          <Button type="submit">Cadastrar refeição</Button>
+        </form>
+      </Form>
     </div>
   );
 }
