@@ -21,8 +21,6 @@ import { useQuery } from "@tanstack/react-query";
 import { api } from "@/services/api";
 import { parseDateToLocalUTC } from "@/lib/date";
 
-const timeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
-
 export default function Meals() {
   const { data } = useQuery({
     queryKey: ["meals"],

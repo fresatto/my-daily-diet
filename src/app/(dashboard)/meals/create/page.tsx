@@ -31,7 +31,7 @@ export default function CreateMeal() {
   const form = useForm<CreateMealSchema>({
     defaultValues: {
       food_id: "",
-      // amount: 0,
+      amount: 0,
     },
     resolver: zodResolver(createMealSchema),
   });
