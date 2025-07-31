@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { format } from "date-fns";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -14,37 +15,13 @@ import {
 } from "@/components/ui/table";
 import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 
-import { Meal, MealsResponse } from "@/@types/dtos";
+import { MealsResponse } from "@/@types/dtos";
 import { PageHeader } from "@/components/PageHeader";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/services/api";
+import { parseDateToLocalUTC } from "@/lib/date";
 
-const meals: Meal[] = [
-  {
-    id: "1",
-    amount: 2,
-    created_at: "2025-07-28 23:16:45",
-    proteinConsumed: 5.4,
-    food: {
-      name: "Ovo",
-      portion_type: "unit",
-      portion_amount: 1,
-      protein_per_portion: 2.7,
-    },
-  },
-  {
-    id: "2",
-    amount: 1,
-    created_at: "2025-07-28 23:16:45",
-    proteinConsumed: 5.4,
-    food: {
-      name: "Frango",
-      portion_type: "unit",
-      portion_amount: 1,
-      protein_per_portion: 2.7,
-    },
-  },
-];
+const timeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
 
 export default function Meals() {
   const { data } = useQuery({
@@ -52,7 +29,18 @@ export default function Meals() {
     queryFn: async () => {
       const response = await api.get<MealsResponse>("/meals");
 
-      return response.data;
+      const meals = response.data.meals.map((meal) => {
+        const localDate = parseDateToLocalUTC(meal.created_at);
+
+        return {
+          ...meal,
+          created_at: format(localDate, "dd/MM/yyyy HH:mm"),
+        };
+      });
+
+      return {
+        meals,
+      };
     },
   });
 
@@ -75,6 +63,7 @@ export default function Meals() {
             <TableHead>Tipo de porção</TableHead>
             <TableHead>Quantidade</TableHead>
             <TableHead>Proteína consumida</TableHead>
+            <TableHead>Data</TableHead>
             <TableHead className="text-right">Ações</TableHead>
           </TableRow>
         </TableHeader>
@@ -89,6 +78,7 @@ export default function Meals() {
               </TableCell>
               <TableCell>{meal.amount}</TableCell>
               <TableCell>{meal.proteinConsumed}g</TableCell>
+              <TableCell>{meal.created_at}</TableCell>
               <TableCell className="text-right">
                 <Button variant="ghost" size="icon">
                   <PencilIcon className="w-1 h-1" />
