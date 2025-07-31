@@ -26,8 +26,10 @@ import { api } from "@/services/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { FoodsResponse } from "@/@types/dtos";
+import { useRouter } from "next/navigation";
 
 export default function CreateMeal() {
+  const router = useRouter();
   const form = useForm<CreateMealSchema>({
     defaultValues: {
       food_id: "",
@@ -40,6 +42,9 @@ export default function CreateMeal() {
     mutationFn: async (data: CreateMealSchema) => {
       const response = await api.post("/meals", data);
       return response.data;
+    },
+    onSuccess: () => {
+      router.push("/meals");
     },
   });
 

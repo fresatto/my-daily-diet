@@ -5,7 +5,7 @@ export const createMealSchema = z.object({
   amount: z.number().refine(
     (value) => {
       const number = Number(value);
-      return number > 1;
+      return number > 0;
     },
     {
       message: "Quantidade deve ser maior que 1 (g ou unidade).",
