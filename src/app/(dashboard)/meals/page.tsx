@@ -15,13 +15,21 @@ import {
 } from "@/components/ui/table";
 import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 
-import { MealsResponse } from "@/@types/dtos";
+import { Meal, MealsResponse } from "@/@types/dtos";
 import { PageHeader } from "@/components/PageHeader";
 import { useQuery } from "@tanstack/react-query";
 import { api } from "@/services/api";
 import { parseDateToLocalUTC } from "@/lib/date";
 
 export default function Meals() {
+  const getMealAmountSuffix = (meal: Meal) => {
+    if (meal.food.portion_type === "grams") {
+      return "g";
+    }
+
+    return meal.amount > 0 ? "unidades" : "unidades";
+  };
+
   const { data } = useQuery({
     queryKey: ["meals"],
     queryFn: async () => {
@@ -29,9 +37,12 @@ export default function Meals() {
 
       const meals = response.data.meals.map((meal) => {
         const localDate = parseDateToLocalUTC(meal.created_at);
+        const amountSuffix = getMealAmountSuffix(meal);
+        const formattedAmount = `${meal.amount}${amountSuffix}`;
 
         return {
           ...meal,
+          formattedAmount,
           created_at: format(localDate, "dd/MM/yyyy HH:mm"),
         };
       });
@@ -74,7 +85,7 @@ export default function Meals() {
                   {meal.food.portion_type === "grams" ? "Gramas" : "Unidade"}
                 </Badge>
               </TableCell>
-              <TableCell>{meal.amount}</TableCell>
+              <TableCell>{meal.formattedAmount}</TableCell>
               <TableCell>{meal.proteinConsumed}g</TableCell>
               <TableCell>{meal.created_at}</TableCell>
               <TableCell className="text-right">
