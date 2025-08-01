@@ -25,7 +25,7 @@ import {
 } from "@/components/ui/table";
 import { api } from "@/services/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { DialogClose } from "@radix-ui/react-dialog";
+import { toast } from "sonner";
 
 export default function Foods() {
   const queryClient = useQueryClient();
@@ -46,6 +46,8 @@ export default function Foods() {
     },
     onSuccess: (foodId) => {
       const foods = queryClient.getQueryData<FoodsResponse>(["foods"]);
+
+      toast.success("Alimento deletado com sucesso");
 
       if (foods) {
         queryClient.setQueryData(["foods"], {
@@ -114,9 +116,7 @@ export default function Foods() {
                           </DialogDescription>
                         </DialogHeader>
                         <DialogFooter>
-                          <DialogClose asChild>
-                            <Button variant="outline">Cancelar</Button>
-                          </DialogClose>
+                          <Button variant="outline">Cancelar</Button>
                           <Button
                             variant="destructive"
                             onClick={() => deleteFood(food.id)}
