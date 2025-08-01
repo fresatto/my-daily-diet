@@ -1,10 +1,13 @@
 import Link from "next/link";
+
 import {
   NavigationMenu,
   NavigationMenuItem,
   NavigationMenuLink,
   NavigationMenuList,
 } from "@/components/ui/navigation-menu";
+import { cn } from "@/lib/utils";
+import { NavLink } from "@/components/NavLink";
 
 export default function DashboardLayout({
   children,
@@ -17,20 +20,20 @@ export default function DashboardLayout({
         className="py-4 max-w-full w-screen border-b border-b-gray-300"
         viewport={false}
       >
-        <NavigationMenuList>
+        <NavigationMenuList className="flex gap-3">
           <NavigationMenuItem>
             <NavigationMenuLink asChild>
-              <Link href="/foods">Alimentos cadastrados</Link>
+              <NavLink href="/foods">Alimentos cadastrados</NavLink>
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink asChild>
-              <Link href="/meals">Refeições</Link>
+              <NavLink href="/meals">Refeições</NavLink>
             </NavigationMenuLink>
           </NavigationMenuItem>
           <NavigationMenuItem>
             <NavigationMenuLink asChild>
-              <Link href="/daily-goal">Objetivo diário</Link>
+              <NavLink href="/daily-goal">Objetivo diário</NavLink>
             </NavigationMenuLink>
           </NavigationMenuItem>
         </NavigationMenuList>
