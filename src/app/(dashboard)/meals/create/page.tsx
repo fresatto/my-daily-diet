@@ -62,7 +62,13 @@ export default function CreateMeal() {
 
   return (
     <div>
-      <PageHeader title="Cadastrar refeição" />
+      <PageHeader
+        title="Cadastrar refeição"
+        breadcrumbItems={[
+          { label: "Refeições", href: "/meals" },
+          { label: "Cadastrar refeição" },
+        ]}
+      />
       <Form {...form}>
         <form
           onSubmit={form.handleSubmit(onSubmit)}

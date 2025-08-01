@@ -38,7 +38,13 @@ export default function CreateFood() {
 
   return (
     <div>
-      <PageHeader title="Cadastrar alimento" />
+      <PageHeader
+        title="Cadastrar alimento"
+        breadcrumbItems={[
+          { label: "Alimentos cadastrados", href: "/foods" },
+          { label: "Cadastrar alimento" },
+        ]}
+      />
 
       <form className="flex flex-col gap-4" onSubmit={handleSubmit(onSubmit)}>
         <Input placeholder="Nome" {...register("name")} />

@@ -10,7 +10,8 @@ type NavLinkProps = PropsWithChildren<LinkProps>;
 export function NavLink({ children, ...props }: NavLinkProps) {
   const pathname = usePathname();
 
-  const isActive = pathname === props.href;
+  const isActive =
+    pathname === props.href || pathname.startsWith(props.href as string);
 
   return (
     <Link
