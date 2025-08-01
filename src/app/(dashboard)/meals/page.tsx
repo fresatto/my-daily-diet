@@ -1,8 +1,19 @@
 "use client";
 
 import Link from "next/link";
+import { useState } from "react";
 import { format } from "date-fns";
+import { useQuery } from "@tanstack/react-query";
+import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
+
 import { Badge } from "@/components/ui/badge";
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -13,15 +24,17 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table";
-import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 
-import { Meal, MealsResponse } from "@/@types/dtos";
+import { Meal, MealsResponse, Period } from "@/@types/dtos";
 import { PageHeader } from "@/components/PageHeader";
-import { useQuery } from "@tanstack/react-query";
 import { api } from "@/services/api";
 import { parseDateToLocalUTC } from "@/lib/date";
 
 export default function Meals() {
+  const [selectedPeriod, setSelectedPeriod] = useState<Period | undefined>(
+    Period.TODAY
+  );
+
   const getMealAmountSuffix = (meal: Meal) => {
     if (meal.food.portion_type === "grams") {
       return "g";
@@ -30,10 +43,18 @@ export default function Meals() {
     return meal.amount > 0 ? "unidades" : "unidades";
   };
 
+  const handlePeriodChange = (period: Period) => {
+    setSelectedPeriod(period);
+  };
+
   const { data } = useQuery({
-    queryKey: ["meals"],
+    queryKey: ["meals", selectedPeriod],
     queryFn: async () => {
-      const response = await api.get<MealsResponse>("/meals");
+      const response = await api.get<MealsResponse>("/meals", {
+        params: {
+          period: selectedPeriod,
+        },
+      });
 
       const meals = response.data.meals.map((meal) => {
         const localDate = parseDateToLocalUTC(meal.created_at);
@@ -58,10 +79,28 @@ export default function Meals() {
       <PageHeader
         title="Refeições cadastradas"
         action={
-          <Button>
-            <PlusIcon className="w-4 h-4" />
-            <Link href="/meals/create">Cadastrar refeição</Link>
-          </Button>
+          <div className="flex gap-2">
+            <Select
+              defaultValue={Period.TODAY}
+              onValueChange={(value: Period) => handlePeriodChange(value)}
+            >
+              <SelectTrigger>
+                <SelectValue placeholder="Selecione um período" />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={Period.TODAY}>Hoje</SelectItem>
+                <SelectItem value={Period.YESTERDAY}>Ontem</SelectItem>
+                <SelectItem value={Period.LAST_7_DAYS}>
+                  Últimos 7 dias
+                </SelectItem>
+                <SelectItem value={Period.MONTH}>Mês</SelectItem>
+              </SelectContent>
+            </Select>
+            <Button>
+              <PlusIcon className="w-4 h-4" />
+              <Link href="/meals/create">Cadastrar refeição</Link>
+            </Button>
+          </div>
         }
       />
       <Table>
