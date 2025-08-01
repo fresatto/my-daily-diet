@@ -1,6 +1,15 @@
 "use client";
 
 import Link from "next/link";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { FoodsResponse } from "@/@types/dtos";
 import { PageHeader } from "@/components/PageHeader";
@@ -16,6 +25,7 @@ import {
 } from "@/components/ui/table";
 import { api } from "@/services/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { DialogClose } from "@radix-ui/react-dialog";
 
 export default function Foods() {
   const queryClient = useQueryClient();
@@ -89,13 +99,33 @@ export default function Foods() {
                     <Button variant="ghost" size="icon">
                       <PencilIcon className="w-1 h-1" />
                     </Button>
-                    <Button
-                      variant="ghost"
-                      size="icon"
-                      onClick={() => deleteFood(food.id)}
-                    >
-                      <TrashIcon className="w-1 h-1" color="red" />
-                    </Button>
+                    <Dialog>
+                      <DialogTrigger>
+                        <Button variant="ghost" size="icon">
+                          <TrashIcon className="w-1 h-1" color="red" />
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Tem certeza?</DialogTitle>
+                          <DialogDescription>
+                            Essa ação não pode ser desfeita. Isso irá deletar o
+                            alimento e todas as refeições relacionadas a ele.
+                          </DialogDescription>
+                        </DialogHeader>
+                        <DialogFooter>
+                          <DialogClose asChild>
+                            <Button variant="outline">Cancelar</Button>
+                          </DialogClose>
+                          <Button
+                            variant="destructive"
+                            onClick={() => deleteFood(food.id)}
+                          >
+                            Deletar
+                          </Button>
+                        </DialogFooter>
+                      </DialogContent>
+                    </Dialog>
                   </TableCell>
                 </TableRow>
               );
