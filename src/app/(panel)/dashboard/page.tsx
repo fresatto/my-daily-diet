@@ -55,13 +55,13 @@ export default function Dashboard() {
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-2">
-        <Calendar size={20} />
+        <Calendar size={16} />
         <h1 className="text-sm">Sábado, 2 de agosto de 2025.</h1>
       </div>
       <div className="flex flex-col gap-4 p-6 bg-white rounded-lg border border-gray-200">
         <div className="flex items-center justify-between">
-          <h3>Proteínas consumidas</h3>
-          <Utensils />
+          <h3 className="font-bold">Proteínas consumidas</h3>
+          <Utensils className="text-green-400" />
         </div>
         <div className="flex flex-col">
           <strong>45g</strong>
@@ -76,7 +76,7 @@ export default function Dashboard() {
       </div>
       <div className="flex flex-col gap-4 p-6 bg-white rounded-lg border border-gray-200">
         <div className="flex items-center gap-2">
-          <Utensils size={16} />
+          <Utensils size={16} className="text-green-400" />
           <h3 className="text-sm font-bold">Refeições de hoje</h3>
         </div>
 
@@ -100,7 +100,7 @@ export default function Dashboard() {
       </div>
       <div className="flex flex-col gap-4 p-6 bg-white rounded-lg border border-gray-200">
         <div className="flex items-center gap-2">
-          <TrendingUp size={16} />
+          <TrendingUp size={16} className="text-green-400" />
           <h3 className="text-sm font-bold">Progresso da semana</h3>
         </div>
 
