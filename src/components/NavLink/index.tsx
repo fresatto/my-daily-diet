@@ -16,7 +16,10 @@ export function NavLink({ children, ...props }: NavLinkProps) {
   return (
     <Link
       {...props}
-      className={cn("text-sm font-medium", isActive && "underline")}
+      className={cn(
+        "text-sm font-semibold text-gray-500",
+        isActive && " text-gray-900"
+      )}
     >
       {children}
     </Link>

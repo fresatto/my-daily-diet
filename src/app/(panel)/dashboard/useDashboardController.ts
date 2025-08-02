@@ -59,8 +59,6 @@ export function useDashboardController() {
     const capitalizedDate =
       formattedDate.charAt(0).toUpperCase() + formattedDate.slice(1);
 
-    console.log({ capitalizedDate });
-
     return capitalizedDate;
   };
 

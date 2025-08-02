@@ -15,33 +15,35 @@ export default function DashboardLayout({
 }) {
   return (
     <div className="flex flex-col h-screen">
-      <NavigationMenu
-        className="py-4 max-w-full w-screen border-b border-b-gray-300 grow-0"
-        viewport={false}
-      >
-        <NavigationMenuList className="flex gap-3">
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <NavLink href="/dashboard">Dashboard</NavLink>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <NavLink href="/foods">Alimentos cadastrados</NavLink>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <NavLink href="/meals">Refeições</NavLink>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-          <NavigationMenuItem>
-            <NavigationMenuLink asChild>
-              <NavLink href="/daily-goal">Objetivo diário</NavLink>
-            </NavigationMenuLink>
-          </NavigationMenuItem>
-        </NavigationMenuList>
-      </NavigationMenu>
+      <header className="border-b border-b-gray-300 grow-0">
+        <div className="mx-auto max-w-7xl w-full px-4 flex items-center justify-between">
+          <h1 className="text-2xl font-bold">ProteinTracker</h1>
+          <NavigationMenu className="py-4 " viewport={false}>
+            <NavigationMenuList className="flex gap-3">
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <NavLink href="/dashboard">Dashboard</NavLink>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <NavLink href="/foods">Alimentos cadastrados</NavLink>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <NavLink href="/meals">Refeições</NavLink>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+              <NavigationMenuItem>
+                <NavigationMenuLink asChild>
+                  <NavLink href="/daily-goal">Objetivo diário</NavLink>
+                </NavigationMenuLink>
+              </NavigationMenuItem>
+            </NavigationMenuList>
+          </NavigationMenu>
+        </div>
+      </header>
       <div className="mx-auto max-w-7xl w-full p-4 flex-1">{children}</div>
     </div>
   );
