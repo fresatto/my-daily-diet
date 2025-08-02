@@ -1,5 +1,5 @@
 import { useForm } from "react-hook-form";
-import { useMutation } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import {
   Dialog,
   DialogContent,
@@ -31,12 +31,16 @@ import {
 import { cn } from "@/lib/utils";
 import { toast } from "sonner";
 import { useState } from "react";
+import { foodsQueryKeys } from "@/services/queries/foods";
+import { FoodsResponse } from "@/@types/dtos";
 
 type NewFoodDialogProps = {
   children: React.ReactNode;
 };
 
 export function NewFoodDialog({ children }: NewFoodDialogProps) {
+  const queryClient = useQueryClient();
+
   const [isOpen, setIsOpen] = useState(false);
 
   const form = useForm({
@@ -65,8 +69,17 @@ export function NewFoodDialog({ children }: NewFoodDialogProps) {
 
       return response.data;
     },
-    onSuccess: () => {
+    onSuccess: (data) => {
       toast.success("Alimento cadastrado com sucesso");
+
+      queryClient.setQueryData(
+        foodsQueryKeys.list(),
+        (oldData: FoodsResponse) => {
+          return {
+            foods: [...oldData.foods, data],
+          };
+        }
+      );
 
       setIsOpen(false);
     },

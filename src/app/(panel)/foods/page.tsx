@@ -27,14 +27,16 @@ import { api } from "@/services/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { NewFoodDialog } from "@/components/NewFoodDialog";
+import { foodsQueryKeys } from "@/services/queries/foods";
 
 export default function Foods() {
   const queryClient = useQueryClient();
 
   const { data } = useQuery({
-    queryKey: ["foods"],
+    queryKey: foodsQueryKeys.list(),
     queryFn: async () => {
       const response = await api.get<FoodsResponse>("/food");
+
       return response.data;
     },
   });
