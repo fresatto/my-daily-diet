@@ -102,7 +102,7 @@ export default function Foods() {
                       <PencilIcon className="w-1 h-1" />
                     </Button>
                     <Dialog>
-                      <DialogTrigger>
+                      <DialogTrigger asChild>
                         <Button variant="ghost" size="icon">
                           <TrashIcon className="w-1 h-1" color="red" />
                         </Button>

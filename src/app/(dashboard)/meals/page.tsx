@@ -3,7 +3,7 @@
 import Link from "next/link";
 import { useState } from "react";
 import { format } from "date-fns";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -14,6 +14,15 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogFooter,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import {
   Table,
@@ -29,8 +38,10 @@ import { Meal, MealsResponse, Period } from "@/@types/dtos";
 import { PageHeader } from "@/components/PageHeader";
 import { api } from "@/services/api";
 import { parseDateToLocalUTC } from "@/lib/date";
+import { toast } from "sonner";
 
 export default function Meals() {
+  const queryClient = useQueryClient();
   const [selectedPeriod, setSelectedPeriod] = useState<Period | undefined>(
     Period.TODAY
   );
@@ -71,6 +82,21 @@ export default function Meals() {
       return {
         meals,
       };
+    },
+  });
+
+  const { mutate: deleteMeal } = useMutation({
+    mutationFn: async (mealId: string) => {
+      await api.delete(`/meals/${mealId}`);
+
+      return mealId;
+    },
+    onSuccess: (mealId) => {
+      queryClient.setQueryData(["meals", selectedPeriod], {
+        meals: data?.meals.filter((meal) => meal.id !== mealId),
+      });
+
+      toast.success("Refeição deletada com sucesso!");
     },
   });
 
@@ -131,9 +157,31 @@ export default function Meals() {
                 <Button variant="ghost" size="icon">
                   <PencilIcon className="w-1 h-1" />
                 </Button>
-                <Button variant="ghost" size="icon">
-                  <TrashIcon className="w-1 h-1" color="red" />
-                </Button>
+
+                <Dialog>
+                  <DialogTrigger>
+                    <Button variant="ghost" size="icon">
+                      <TrashIcon className="w-1 h-1" color="red" />
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Tem certeza?</DialogTitle>
+                      <DialogDescription>
+                        Essa ação não pode ser desfeita.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <Button variant="outline">Cancelar</Button>
+                      <Button
+                        variant="destructive"
+                        onClick={() => deleteMeal(meal.id)}
+                      >
+                        Deletar
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
               </TableCell>
             </TableRow>
           ))}
