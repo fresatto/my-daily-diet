@@ -17,17 +17,14 @@ export default function DashboardLayout({
     <div className="flex flex-col h-screen">
       <header className="border-b border-b-gray-300 grow-0">
         <div className="mx-auto max-w-7xl w-full px-4 flex items-center justify-between">
-          <h1 className="text-2xl font-bold">ProteinTracker</h1>
+          <h1 className="text-2xl font-bold">
+            <Link href="/dashboard">ProteinTracker</Link>
+          </h1>
           <NavigationMenu className="py-4 " viewport={false}>
             <NavigationMenuList className="flex gap-3">
               <NavigationMenuItem>
                 <NavigationMenuLink asChild>
-                  <NavLink href="/dashboard">Dashboard</NavLink>
-                </NavigationMenuLink>
-              </NavigationMenuItem>
-              <NavigationMenuItem>
-                <NavigationMenuLink asChild>
-                  <NavLink href="/foods">Alimentos cadastrados</NavLink>
+                  <NavLink href="/foods">Alimentos</NavLink>
                 </NavigationMenuLink>
               </NavigationMenuItem>
               <NavigationMenuItem>

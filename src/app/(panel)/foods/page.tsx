@@ -9,6 +9,7 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
+  DialogClose,
 } from "@/components/ui/dialog";
 import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 import { FoodsResponse } from "@/@types/dtos";
@@ -116,7 +117,9 @@ export default function Foods() {
                           </DialogDescription>
                         </DialogHeader>
                         <DialogFooter>
-                          <Button variant="outline">Cancelar</Button>
+                          <DialogClose asChild>
+                            <Button variant="outline">Cancelar</Button>
+                          </DialogClose>
                           <Button
                             variant="destructive"
                             onClick={() => deleteFood(food.id)}
