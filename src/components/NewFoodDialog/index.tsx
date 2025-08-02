@@ -12,7 +12,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 
 import { CreateFoodSchema, createFoodSchema } from "./schema";
 import { Input } from "../ui/input";
-import { Label } from "../ui/label";
 import {
   Select,
   SelectContent,
@@ -29,6 +28,7 @@ import {
   FormLabel,
   FormMessage,
 } from "../ui/form";
+import { cn } from "@/lib/utils";
 
 type NewFoodDialogProps = {
   children: React.ReactNode;
@@ -40,7 +40,7 @@ export function NewFoodDialog({ children }: NewFoodDialogProps) {
       name: "",
       portion_amount: "",
       protein_per_portion: "",
-      portion_type: "unit" as "unit" | "grams",
+      portion_type: "" as "unit" | "grams",
     },
     resolver: zodResolver(createFoodSchema),
   });
@@ -110,7 +110,26 @@ export function NewFoodDialog({ children }: NewFoodDialogProps) {
             <FormField
               control={form.control}
               name="portion_type"
-              render={({ field }) => <Select {...field} />}
+              render={({ field, fieldState: { error } }) => (
+                <FormItem>
+                  <FormLabel>Tipo de porção</FormLabel>
+                  <FormControl>
+                    <Select {...field} onValueChange={field.onChange}>
+                      <SelectTrigger
+                        {...field}
+                        className={cn("w-full", error && "border-destructive")}
+                      >
+                        <SelectValue placeholder="Selecione o tipo de porção" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="grams">Gramas</SelectItem>
+                        <SelectItem value="unit">Unidade</SelectItem>
+                      </SelectContent>
+                    </Select>
+                  </FormControl>
+                  {error && <FormMessage>{error.message}</FormMessage>}
+                </FormItem>
+              )}
             />
             <Button type="submit">Cadastrar</Button>
           </form>

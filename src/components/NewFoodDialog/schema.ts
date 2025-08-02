@@ -15,7 +15,7 @@ export const createFoodSchema = z.object({
       message: "Proteína deve ser maior que 0",
     }),
   portion_type: z.enum(["grams", "unit"], {
-    message: "Tipo de porção deve ser grams ou unit",
+    message: "Campo obrigatório",
   }),
 });
 

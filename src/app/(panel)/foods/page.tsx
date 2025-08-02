@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import {
   Dialog,
   DialogContent,
@@ -27,6 +26,7 @@ import {
 import { api } from "@/services/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
+import { NewFoodDialog } from "@/components/NewFoodDialog";
 
 export default function Foods() {
   const queryClient = useQueryClient();
@@ -63,10 +63,12 @@ export default function Foods() {
       <PageHeader
         title="Alimentos cadastrados"
         action={
-          <Button>
-            <PlusIcon />
-            <Link href="/foods/create">Adicionar</Link>
-          </Button>
+          <NewFoodDialog>
+            <Button>
+              <PlusIcon />
+              Adicionar
+            </Button>
+          </NewFoodDialog>
         }
       />
       <Table>
