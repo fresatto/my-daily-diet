@@ -1,8 +1,21 @@
-import { Button } from "@/components/ui/button";
-import { Progress } from "@/components/ui/progress";
+"use client";
+
 import { Calendar, TrendingUp, Utensils } from "lucide-react";
 
+import { Button } from "@/components/ui/button";
+import { Progress } from "@/components/ui/progress";
+
+import { useDashboardController } from "./useDashboardController";
+
 export default function Dashboard() {
+  const {
+    mealsData,
+    todayFormattedDate,
+    dailyGoalProtein,
+    dailyGoalPercentage,
+    dailyProteinConsumed,
+  } = useDashboardController();
+
   const mockedMeals = [
     {
       name: "Ovo",
@@ -56,7 +69,7 @@ export default function Dashboard() {
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-2">
         <Calendar size={16} />
-        <h1 className="text-sm">Sábado, 2 de agosto de 2025.</h1>
+        <h1 className="text-sm">{todayFormattedDate}</h1>
       </div>
       <div className="flex flex-col gap-4 p-6 bg-white rounded-lg border border-gray-200">
         <div className="flex items-center justify-between">
@@ -64,13 +77,13 @@ export default function Dashboard() {
           <Utensils className="text-green-400" />
         </div>
         <div className="flex flex-col">
-          <strong>45g</strong>
-          <small>de 170g meta diária</small>
+          <strong>{dailyProteinConsumed}g</strong>
+          <small>de {dailyGoalProtein}g meta diária</small>
         </div>
         <div className="flex flex-col gap-2">
-          <Progress value={45} />
+          <Progress value={Number(dailyGoalPercentage)} />
           <small className="text-sm text-gray-500">
-            38% do objetivo diário
+            {dailyGoalPercentage}% do objetivo diário
           </small>
         </div>
       </div>
@@ -80,17 +93,17 @@ export default function Dashboard() {
           <h3 className="text-sm font-bold">Refeições de hoje</h3>
         </div>
 
-        {mockedMeals.map((meal) => (
+        {mealsData?.meals.map((meal) => (
           <div
-            key={meal.name}
+            key={meal.id}
             className="flex py-3 px-4 justify-between items-center rounded-lg bg-gray-100"
           >
             <div className="flex flex-col">
-              <h3 className="text-sm font-bold">{meal.name}</h3>
-              <small>às {meal.time}</small>
+              <h3 className="text-sm font-bold">{meal.food.name}</h3>
+              <small>{meal.created_at}</small>
             </div>
             <div className="flex flex-col items-end text-xs">
-              <p className="font-bold">{meal.protein}g</p>
+              <p className="font-bold">{meal.proteinConsumed}g</p>
               <p>proteína</p>
             </div>
           </div>
