@@ -29,12 +29,16 @@ import {
   FormMessage,
 } from "../ui/form";
 import { cn } from "@/lib/utils";
+import { toast } from "sonner";
+import { useState } from "react";
 
 type NewFoodDialogProps = {
   children: React.ReactNode;
 };
 
 export function NewFoodDialog({ children }: NewFoodDialogProps) {
+  const [isOpen, setIsOpen] = useState(false);
+
   const form = useForm({
     defaultValues: {
       name: "",
@@ -45,10 +49,26 @@ export function NewFoodDialog({ children }: NewFoodDialogProps) {
     resolver: zodResolver(createFoodSchema),
   });
 
-  const { mutate: createFood } = useMutation({
+  const { mutate: createFood, isPending } = useMutation({
     mutationFn: async (data: CreateFoodSchema) => {
-      const response = await api.post("/food", data);
+      const { portion_amount, protein_per_portion, ...rest } = data;
+
+      const payload = {
+        ...rest,
+        portion_amount: Number(portion_amount),
+        protein_per_portion: Number(protein_per_portion),
+      };
+
+      await new Promise((resolve) => setTimeout(resolve, 5000));
+
+      const response = await api.post("/food", payload);
+
       return response.data;
+    },
+    onSuccess: () => {
+      toast.success("Alimento cadastrado com sucesso");
+
+      setIsOpen(false);
     },
   });
 
@@ -56,8 +76,13 @@ export function NewFoodDialog({ children }: NewFoodDialogProps) {
     createFood(data);
   };
 
+  const handleOpenChange = (open: boolean) => {
+    form.reset();
+    setIsOpen(open);
+  };
+
   return (
-    <Dialog>
+    <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
@@ -76,6 +101,30 @@ export function NewFoodDialog({ children }: NewFoodDialogProps) {
                       {...field}
                       placeholder="Frango, Patinho, Salmão..."
                     />
+                  </FormControl>
+                  {error && <FormMessage>{error.message}</FormMessage>}
+                </FormItem>
+              )}
+            />
+            <FormField
+              control={form.control}
+              name="portion_type"
+              render={({ field, fieldState: { error } }) => (
+                <FormItem>
+                  <FormLabel>Tipo de porção</FormLabel>
+                  <FormControl>
+                    <Select {...field} onValueChange={field.onChange}>
+                      <SelectTrigger
+                        {...field}
+                        className={cn("w-full", error && "border-destructive")}
+                      >
+                        <SelectValue placeholder="Selecione o tipo de porção" />
+                      </SelectTrigger>
+                      <SelectContent>
+                        <SelectItem value="grams">Gramas</SelectItem>
+                        <SelectItem value="unit">Unidade</SelectItem>
+                      </SelectContent>
+                    </Select>
                   </FormControl>
                   {error && <FormMessage>{error.message}</FormMessage>}
                 </FormItem>
@@ -107,31 +156,9 @@ export function NewFoodDialog({ children }: NewFoodDialogProps) {
                 </FormItem>
               )}
             />
-            <FormField
-              control={form.control}
-              name="portion_type"
-              render={({ field, fieldState: { error } }) => (
-                <FormItem>
-                  <FormLabel>Tipo de porção</FormLabel>
-                  <FormControl>
-                    <Select {...field} onValueChange={field.onChange}>
-                      <SelectTrigger
-                        {...field}
-                        className={cn("w-full", error && "border-destructive")}
-                      >
-                        <SelectValue placeholder="Selecione o tipo de porção" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        <SelectItem value="grams">Gramas</SelectItem>
-                        <SelectItem value="unit">Unidade</SelectItem>
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  {error && <FormMessage>{error.message}</FormMessage>}
-                </FormItem>
-              )}
-            />
-            <Button type="submit">Cadastrar</Button>
+            <Button type="submit" loading={isPending}>
+              Cadastrar
+            </Button>
           </form>
         </Form>
       </DialogContent>
