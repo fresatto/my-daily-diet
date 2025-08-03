@@ -3,12 +3,13 @@ import {
   UseMutationOptions,
   useQuery,
   useQueryClient,
-  UseQueryOptions,
 } from "@tanstack/react-query";
 
 import { api } from "@/services/api";
-import { MealsResponse, Period } from "@/@types/dtos";
+import { Meal, MealsResponse, Period } from "@/@types/dtos";
 import { CreateMealSchema } from "@/components/NewMealDialog/schema";
+import { parseDateToLocalUTC } from "@/lib/date";
+import { format } from "date-fns";
 
 type MealsQueryFilters = {
   period?: Period;
@@ -23,10 +24,15 @@ export const mealsQueryKeys = {
   ],
 };
 
-export const useMealsQuery = (
-  filters?: MealsQueryFilters,
-  queryProps?: Omit<UseQueryOptions<MealsResponse>, "queryKey" | "queryFn">
-) => {
+const getMealAmountSuffix = (meal: Meal) => {
+  if (meal.food.portion_type === "grams") {
+    return "g";
+  }
+
+  return meal.amount > 0 ? "unidades" : "unidades";
+};
+
+export const useMealsQuery = (filters?: MealsQueryFilters) => {
   return useQuery({
     queryKey: mealsQueryKeys.list(filters),
     queryFn: async () => {
@@ -36,7 +42,23 @@ export const useMealsQuery = (
 
       return response.data;
     },
-    ...queryProps,
+    select: (data) => {
+      const meals = data.meals.map((meal) => {
+        const localDate = parseDateToLocalUTC(meal.created_at);
+        const amountSuffix = getMealAmountSuffix(meal);
+        const formattedAmount = `${meal.amount}${amountSuffix}`;
+
+        return {
+          ...meal,
+          formattedAmount,
+          created_at: format(localDate, "dd/MM/yyyy HH:mm"),
+        };
+      });
+
+      return {
+        meals,
+      };
+    },
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };

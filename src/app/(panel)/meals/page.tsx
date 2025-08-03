@@ -1,7 +1,6 @@
 "use client";
 
 import { useState } from "react";
-import { format } from "date-fns";
 import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -34,7 +33,6 @@ import {
 
 import { Meal, Period } from "@/@types/dtos";
 import { PageHeader } from "@/components/PageHeader";
-import { parseDateToLocalUTC } from "@/lib/date";
 import { toast } from "sonner";
 import { NewMealDialog } from "@/components/NewMealDialog";
 import { useDeleteMealMutation, useMealsQuery } from "@/services/queries/meals";
@@ -64,30 +62,9 @@ export default function Meals() {
     setSelectedPeriod(period);
   };
 
-  const { data } = useMealsQuery(
-    {
-      period: selectedPeriod,
-    },
-    {
-      select: (data) => {
-        const meals = data.meals.map((meal) => {
-          const localDate = parseDateToLocalUTC(meal.created_at);
-          const amountSuffix = getMealAmountSuffix(meal);
-          const formattedAmount = `${meal.amount}${amountSuffix}`;
-
-          return {
-            ...meal,
-            formattedAmount,
-            created_at: format(localDate, "dd/MM/yyyy HH:mm"),
-          };
-        });
-
-        return {
-          meals,
-        };
-      },
-    }
-  );
+  const { data } = useMealsQuery({
+    period: selectedPeriod,
+  });
 
   const { mutate: deleteMeal } = useDeleteMealMutation({
     onSuccess: () => {
