@@ -39,6 +39,7 @@ import { api } from "@/services/api";
 import { parseDateToLocalUTC } from "@/lib/date";
 import { toast } from "sonner";
 import { NewMealDialog } from "@/components/NewMealDialog";
+import { useMealsQuery } from "@/services/queries/meals";
 
 export default function Meals() {
   const queryClient = useQueryClient();
@@ -58,32 +59,30 @@ export default function Meals() {
     setSelectedPeriod(period);
   };
 
-  const { data } = useQuery({
-    queryKey: ["meals", selectedPeriod],
-    queryFn: async () => {
-      const response = await api.get<MealsResponse>("/meals", {
-        params: {
-          period: selectedPeriod,
-        },
-      });
+  const { data } = useMealsQuery(
+    {
+      period: selectedPeriod,
+    },
+    {
+      select: (data) => {
+        const meals = data.meals.map((meal) => {
+          const localDate = parseDateToLocalUTC(meal.created_at);
+          const amountSuffix = getMealAmountSuffix(meal);
+          const formattedAmount = `${meal.amount}${amountSuffix}`;
 
-      const meals = response.data.meals.map((meal) => {
-        const localDate = parseDateToLocalUTC(meal.created_at);
-        const amountSuffix = getMealAmountSuffix(meal);
-        const formattedAmount = `${meal.amount}${amountSuffix}`;
+          return {
+            ...meal,
+            formattedAmount,
+            created_at: format(localDate, "dd/MM/yyyy HH:mm"),
+          };
+        });
 
         return {
-          ...meal,
-          formattedAmount,
-          created_at: format(localDate, "dd/MM/yyyy HH:mm"),
+          meals,
         };
-      });
-
-      return {
-        meals,
-      };
-    },
-  });
+      },
+    }
+  );
 
   const { mutate: deleteMeal } = useMutation({
     mutationFn: async (mealId: string) => {
