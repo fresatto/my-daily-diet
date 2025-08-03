@@ -1,7 +1,3 @@
-import { useState } from "react";
-import { useForm } from "react-hook-form";
-import { zodResolver } from "@hookform/resolvers/zod";
-
 import {
   Dialog,
   DialogContent,
@@ -10,7 +6,6 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 
-import { CreateMealSchema, createMealSchema } from "./schema";
 import {
   Form,
   FormControl,
@@ -29,25 +24,15 @@ import {
 } from "../ui/select";
 import { cn } from "@/lib/utils";
 import { Button } from "../ui/button";
+import { useNewMealDialogController } from "./useNewMealDialogController";
 
 type NewMealDialogProps = {
   children: React.ReactNode;
 };
 
 export function NewMealDialog({ children }: NewMealDialogProps) {
-  const form = useForm({
-    resolver: zodResolver(createMealSchema),
-  });
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  const handleOpenChange = (open: boolean) => {
-    setIsOpen(open);
-  };
-
-  const onSubmit = (data: CreateMealSchema) => {
-    console.log(data);
-  };
+  const { form, isOpen, handleOpenChange, onSubmit, foods } =
+    useNewMealDialogController();
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
@@ -73,8 +58,11 @@ export function NewMealDialog({ children }: NewMealDialogProps) {
                         <SelectValue placeholder="Selecione o alimento" />
                       </SelectTrigger>
                       <SelectContent>
-                        <SelectItem value="grams">Gramas</SelectItem>
-                        <SelectItem value="unit">Unidade</SelectItem>
+                        {foods?.map((food) => (
+                          <SelectItem key={food.id} value={food.id}>
+                            {food.name}
+                          </SelectItem>
+                        ))}
                       </SelectContent>
                     </Select>
                   </FormControl>
@@ -91,7 +79,7 @@ export function NewMealDialog({ children }: NewMealDialogProps) {
                   <FormControl>
                     <Input
                       {...field}
-                      placeholder="Frango, Patinho, Salmão..."
+                      placeholder="Quantidade (gramas ou unidade)"
                     />
                   </FormControl>
                   {error && <FormMessage>{error.message}</FormMessage>}
