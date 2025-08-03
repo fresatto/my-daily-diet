@@ -2,7 +2,6 @@
 
 import { useState } from "react";
 import { format } from "date-fns";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
 
 import { Badge } from "@/components/ui/badge";
@@ -33,19 +32,25 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { Meal, MealsResponse, Period } from "@/@types/dtos";
+import { Meal, Period } from "@/@types/dtos";
 import { PageHeader } from "@/components/PageHeader";
-import { api } from "@/services/api";
 import { parseDateToLocalUTC } from "@/lib/date";
 import { toast } from "sonner";
 import { NewMealDialog } from "@/components/NewMealDialog";
-import { useMealsQuery } from "@/services/queries/meals";
+import { useDeleteMealMutation, useMealsQuery } from "@/services/queries/meals";
 
 export default function Meals() {
-  const queryClient = useQueryClient();
   const [selectedPeriod, setSelectedPeriod] = useState<Period | undefined>(
     Period.TODAY
   );
+
+  const [selectedMealId, setSelectedMealId] = useState<string>();
+  const [isDeleteMealDialogOpen, setIsDeleteMealDialogOpen] = useState(false);
+
+  const handleDeleteMealDialogOpenChange = (open: boolean, mealId?: string) => {
+    setIsDeleteMealDialogOpen(open);
+    setSelectedMealId(mealId);
+  };
 
   const getMealAmountSuffix = (meal: Meal) => {
     if (meal.food.portion_type === "grams") {
@@ -84,18 +89,10 @@ export default function Meals() {
     }
   );
 
-  const { mutate: deleteMeal } = useMutation({
-    mutationFn: async (mealId: string) => {
-      await api.delete(`/meals/${mealId}`);
-
-      return mealId;
-    },
-    onSuccess: (mealId) => {
-      queryClient.setQueryData(["meals", selectedPeriod], {
-        meals: data?.meals.filter((meal) => meal.id !== mealId),
-      });
-
+  const { mutate: deleteMeal } = useDeleteMealMutation({
+    onSuccess: () => {
       toast.success("Refeição deletada com sucesso!");
+      handleDeleteMealDialogOpenChange(false);
     },
   });
 
@@ -161,8 +158,13 @@ export default function Meals() {
                   <PencilIcon className="w-1 h-1" />
                 </Button>
 
-                <Dialog>
-                  <DialogTrigger>
+                <Dialog
+                  open={selectedMealId === meal.id && isDeleteMealDialogOpen}
+                  onOpenChange={(open) =>
+                    handleDeleteMealDialogOpenChange(open, meal.id)
+                  }
+                >
+                  <DialogTrigger className="w-4 h-4" asChild>
                     <Button variant="ghost" size="icon">
                       <TrashIcon className="w-1 h-1" color="red" />
                     </Button>

@@ -1,6 +1,3 @@
-import { MealsResponse, Period } from "@/@types/dtos";
-import { CreateMealSchema } from "@/components/NewMealDialog/schema";
-import { api } from "@/services/api";
 import {
   useMutation,
   UseMutationOptions,
@@ -8,6 +5,10 @@ import {
   useQueryClient,
   UseQueryOptions,
 } from "@tanstack/react-query";
+
+import { api } from "@/services/api";
+import { MealsResponse, Period } from "@/@types/dtos";
+import { CreateMealSchema } from "@/components/NewMealDialog/schema";
 
 type MealsQueryFilters = {
   period?: Period;
@@ -36,6 +37,7 @@ export const useMealsQuery = (
       return response.data;
     },
     ...queryProps,
+    staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };
 
@@ -68,6 +70,48 @@ export const useCreateMealMutation = ({
 
       if (onSuccess) {
         onSuccess(variables, data, context);
+      }
+    },
+    ...mutationsProps,
+  });
+};
+
+export const useDeleteMealMutation = ({
+  onSuccess,
+  ...mutationsProps
+}: Omit<
+  UseMutationOptions<unknown, unknown, string, unknown>,
+  "mutationFn"
+>) => {
+  const queryClient = useQueryClient();
+
+  return useMutation({
+    mutationFn: async (id: string) => {
+      await api.delete(`/meals/${id}`);
+
+      return id;
+    },
+    onSuccess: (deletedMealId, data, context) => {
+      const queryKey = mealsQueryKeys.list({
+        // TODO: get the period from the query params
+        period: Period.TODAY,
+      });
+
+      const oldData = queryClient.getQueryData<MealsResponse>(queryKey);
+
+      if (oldData) {
+        const newData = oldData?.meals.filter(
+          (meal) => meal.id !== deletedMealId
+        );
+
+        queryClient.setQueryData<MealsResponse>(queryKey, {
+          ...oldData,
+          meals: newData,
+        });
+      }
+
+      if (onSuccess) {
+        onSuccess(deletedMealId, data, context);
       }
     },
     ...mutationsProps,
