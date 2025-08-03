@@ -31,7 +31,7 @@ import {
   TableRow,
 } from "@/components/ui/table";
 
-import { Meal, Period } from "@/@types/dtos";
+import { Period } from "@/@types/dtos";
 import { PageHeader } from "@/components/PageHeader";
 import { toast } from "sonner";
 import { NewMealDialog } from "@/components/NewMealDialog";
@@ -48,14 +48,6 @@ export default function Meals() {
   const handleDeleteMealDialogOpenChange = (open: boolean, mealId?: string) => {
     setIsDeleteMealDialogOpen(open);
     setSelectedMealId(mealId);
-  };
-
-  const getMealAmountSuffix = (meal: Meal) => {
-    if (meal.food.portion_type === "grams") {
-      return "g";
-    }
-
-    return meal.amount > 0 ? "unidades" : "unidades";
   };
 
   const handlePeriodChange = (period: Period) => {

@@ -4,12 +4,10 @@ import { api } from "@/services/api";
 import {
   DailyGoalResponse,
   DailyGoalSummaryResponse,
-  MealsResponse,
   Period,
 } from "@/@types/dtos";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
-import { parseDateToLocalUTC } from "@/lib/date";
 import { useMealsQuery } from "@/services/queries/meals";
 
 export function useDashboardController() {

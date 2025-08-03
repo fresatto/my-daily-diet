@@ -65,9 +65,10 @@ function Button({
         "cursor-pointer"
       )}
       disabled={loading || props.disabled}
-      children={customChildren}
       {...props}
-    />
+    >
+      {customChildren}
+    </Comp>
   );
 }
 

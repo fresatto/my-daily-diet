@@ -1,5 +1,6 @@
 "use client";
 
+import { DailyGoalResponse, DailyGoalSummaryResponse } from "@/@types/dtos";
 import { Button } from "@/components/ui/button";
 import { api } from "@/services/api";
 import { useQuery } from "@tanstack/react-query";
@@ -9,7 +10,7 @@ export default function DailyGoal() {
   const { data } = useQuery({
     queryKey: ["daily-goal"],
     queryFn: async () => {
-      const response = await api.get<any>("/daily-goal");
+      const response = await api.get<DailyGoalResponse>("/daily-goal");
 
       return response.data;
     },
@@ -18,7 +19,9 @@ export default function DailyGoal() {
   const { data: summary } = useQuery({
     queryKey: ["daily-goal-summary"],
     queryFn: async () => {
-      const response = await api.get<any>("/daily-goal/summary");
+      const response = await api.get<DailyGoalSummaryResponse>(
+        "/daily-goal/summary"
+      );
 
       return response.data;
     },
