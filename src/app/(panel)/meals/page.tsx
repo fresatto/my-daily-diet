@@ -1,6 +1,5 @@
 "use client";
 
-import Link from "next/link";
 import { useState } from "react";
 import { format } from "date-fns";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
@@ -39,6 +38,7 @@ import { PageHeader } from "@/components/PageHeader";
 import { api } from "@/services/api";
 import { parseDateToLocalUTC } from "@/lib/date";
 import { toast } from "sonner";
+import { NewMealDialog } from "@/components/NewMealDialog";
 
 export default function Meals() {
   const queryClient = useQueryClient();
@@ -122,15 +122,19 @@ export default function Meals() {
                 <SelectItem value={Period.MONTH}>Mês</SelectItem>
               </SelectContent>
             </Select>
-            <Button>
-              <PlusIcon className="w-4 h-4" />
-              <Link href="/meals/create">Cadastrar refeição</Link>
-            </Button>
+            <NewMealDialog>
+              <Button>
+                <PlusIcon className="w-4 h-4" />
+                Cadastrar refeição
+              </Button>
+            </NewMealDialog>
           </div>
         }
       />
       <Table>
-        <TableCaption>Todas as refeições cadastradas.</TableCaption>
+        {data?.meals.length === 0 && (
+          <TableCaption>Nenhuma refeição cadastrada.</TableCaption>
+        )}
         <TableHeader>
           <TableRow>
             <TableHead>Nome</TableHead>
