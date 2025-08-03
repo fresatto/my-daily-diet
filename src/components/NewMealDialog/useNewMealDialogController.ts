@@ -10,6 +10,9 @@ import { CreateMealSchema, createMealSchema } from "./schema";
 
 export function useNewMealDialogController() {
   const form = useForm({
+    defaultValues: {
+      amount: "",
+    },
     resolver: zodResolver(createMealSchema),
   });
 

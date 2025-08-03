@@ -47,10 +47,12 @@ export const useMealsQuery = (filters?: MealsQueryFilters) => {
         const localDate = parseDateToLocalUTC(meal.created_at);
         const amountSuffix = getMealAmountSuffix(meal);
         const formattedAmount = `${meal.amount}${amountSuffix}`;
+        const formattedTime = format(localDate, "'às' HH:mm");
 
         return {
           ...meal,
           formattedAmount,
+          formattedTime,
           created_at: format(localDate, "dd/MM/yyyy HH:mm"),
         };
       });

@@ -6,6 +6,7 @@ import { Button } from "@/components/ui/button";
 import { Progress } from "@/components/ui/progress";
 
 import { useDashboardController } from "./useDashboardController";
+import { NewMealDialog } from "@/components/NewMealDialog";
 
 export default function Dashboard() {
   const {
@@ -90,7 +91,7 @@ export default function Dashboard() {
           >
             <div className="flex flex-col">
               <h3 className="text-sm font-bold">{meal.food.name}</h3>
-              <small>{meal.created_at}</small>
+              <small>{meal.formattedTime}</small>
             </div>
             <div className="flex flex-col items-end text-xs">
               <p className="font-bold">{meal.proteinConsumed}g</p>
@@ -99,7 +100,9 @@ export default function Dashboard() {
           </div>
         ))}
 
-        <Button>Nova refeição</Button>
+        <NewMealDialog>
+          <Button>Nova refeição</Button>
+        </NewMealDialog>
       </div>
       <div className="flex flex-col gap-4 p-6 bg-white rounded-lg border border-gray-200">
         <div className="flex items-center gap-2">

@@ -5,10 +5,12 @@ import {
   DailyGoalResponse,
   DailyGoalSummaryResponse,
   MealsResponse,
+  Period,
 } from "@/@types/dtos";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { parseDateToLocalUTC } from "@/lib/date";
+import { useMealsQuery } from "@/services/queries/meals";
 
 export function useDashboardController() {
   const { data } = useQuery({
@@ -31,24 +33,8 @@ export function useDashboardController() {
     },
   });
 
-  const { data: mealsData } = useQuery({
-    queryKey: ["meals"],
-    queryFn: async () => {
-      const response = await api.get<MealsResponse>("/meals");
-
-      const meals = response.data.meals.map((meal) => {
-        const localDate = parseDateToLocalUTC(meal.created_at);
-
-        return {
-          ...meal,
-          created_at: format(localDate, "'às' HH:mm"),
-        };
-      });
-
-      return {
-        meals,
-      };
-    },
+  const { data: mealsData } = useMealsQuery({
+    period: Period.TODAY,
   });
 
   const getTodayFormattedDate = () => {
