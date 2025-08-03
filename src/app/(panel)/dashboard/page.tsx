@@ -16,24 +16,6 @@ export default function Dashboard() {
     dailyProteinConsumed,
   } = useDashboardController();
 
-  const mockedMeals = [
-    {
-      name: "Ovo",
-      time: "10:23",
-      protein: 100,
-    },
-    {
-      name: "Patinho",
-      time: "12:30",
-      protein: 100,
-    },
-    {
-      name: "Salada",
-      time: "14:40",
-      protein: 100,
-    },
-  ];
-
   const mockedWeekProgress = [
     {
       day: "Dom",
@@ -74,7 +56,7 @@ export default function Dashboard() {
       <div className="flex flex-col gap-4 p-6 bg-white rounded-lg border border-gray-200">
         <div className="flex items-center justify-between">
           <h3 className="font-bold">Proteínas consumidas</h3>
-          <Utensils className="text-green-400" />
+          <Utensils />
         </div>
         <div className="flex flex-col">
           <strong>{dailyProteinConsumed}g</strong>
@@ -89,10 +71,18 @@ export default function Dashboard() {
       </div>
       <div className="flex flex-col gap-4 p-6 bg-white rounded-lg border border-gray-200">
         <div className="flex items-center gap-2">
-          <Utensils size={16} className="text-green-400" />
+          <Utensils size={16} />
           <h3 className="text-sm font-bold">Refeições de hoje</h3>
         </div>
 
+        {mealsData?.meals.length === 0 && (
+          <div className="flex flex-col">
+            <p className="text-sm text-gray-500">
+              Nenhuma refeição cadastrada. Clique no botão abaixo para
+              cadastrar.
+            </p>
+          </div>
+        )}
         {mealsData?.meals.map((meal) => (
           <div
             key={meal.id}
@@ -113,7 +103,7 @@ export default function Dashboard() {
       </div>
       <div className="flex flex-col gap-4 p-6 bg-white rounded-lg border border-gray-200">
         <div className="flex items-center gap-2">
-          <TrendingUp size={16} className="text-green-400" />
+          <TrendingUp size={16} />
           <h3 className="text-sm font-bold">Progresso da semana</h3>
         </div>
 
@@ -123,7 +113,7 @@ export default function Dashboard() {
               <span className="text-[10px] text-gray-500">{item.day}</span>
               <div className="bg-gray-200 rounded-lg h-20 w-full relative p-[3px]">
                 <div
-                  className="bg-green-400 rounded-lg absolute bottom-[3px] left-[3px] right-[3px]"
+                  className="bg-primary rounded-lg absolute bottom-[3px] left-[3px] right-[3px]"
                   style={{ height: `${item.progress}%` }}
                 />
               </div>
