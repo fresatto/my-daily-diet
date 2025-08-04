@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { Calendar, PlusIcon, TrashIcon } from "lucide-react";
 
-import { Badge } from "@/components/ui/badge";
 import {
   Select,
   SelectContent,
@@ -21,21 +20,13 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCaption,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 
 import { Period } from "@/@types/dtos";
 import { PageHeader } from "@/components/PageHeader";
 import { toast } from "sonner";
 import { NewMealDialog } from "@/components/NewMealDialog";
 import { useDeleteMealMutation, useMealsQuery } from "@/services/queries/meals";
+import { CardListItem } from "@/components/CardListItem";
 
 export default function Meals() {
   const [selectedPeriod, setSelectedPeriod] = useState<Period | undefined>(
@@ -96,71 +87,56 @@ export default function Meals() {
           </div>
         }
       />
-      <Table>
-        {data?.meals.length === 0 && (
-          <TableCaption>Nenhuma refeição cadastrada.</TableCaption>
-        )}
-        <TableHeader>
-          <TableRow>
-            <TableHead>Nome</TableHead>
-            <TableHead>Tipo de porção</TableHead>
-            <TableHead>Quantidade</TableHead>
-            <TableHead>Proteína consumida</TableHead>
-            <TableHead>Data</TableHead>
-            <TableHead className="text-right">Ações</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data?.meals.map((meal) => (
-            <TableRow key={meal.id}>
-              <TableCell>{meal.food.name}</TableCell>
-              <TableCell>
-                <Badge variant="secondary">
-                  {meal.food.portion_type === "grams" ? "Gramas" : "Unidade"}
-                </Badge>
-              </TableCell>
-              <TableCell>{meal.formattedAmount}</TableCell>
-              <TableCell>{meal.proteinConsumed}g</TableCell>
-              <TableCell>{meal.created_at}</TableCell>
-              <TableCell className="text-right">
-                <Button variant="ghost" size="icon">
-                  <PencilIcon className="w-1 h-1" />
-                </Button>
-
-                <Dialog
-                  open={selectedMealId === meal.id && isDeleteMealDialogOpen}
-                  onOpenChange={(open) =>
-                    handleDeleteMealDialogOpenChange(open, meal.id)
-                  }
-                >
-                  <DialogTrigger className="w-4 h-4" asChild>
-                    <Button variant="ghost" size="icon">
-                      <TrashIcon className="w-1 h-1" color="red" />
+      <div className="flex flex-col gap-2">
+        {data?.meals.map((meal) => (
+          <CardListItem.Container key={meal.id}>
+            <CardListItem.Content>
+              <CardListItem.Header>
+                <h3 className="text-md font-bold">{meal.food.name}</h3>
+                <CardListItem.Badge>150g</CardListItem.Badge>
+                <CardListItem.Badge>24.5g proteínas</CardListItem.Badge>
+              </CardListItem.Header>
+              <CardListItem.Specs className="flex gap-2">
+                <CardListItem.Spec>
+                  <Calendar className="w-3 h-3" />
+                  <span className="text-xs">{meal.created_at}</span>
+                </CardListItem.Spec>
+              </CardListItem.Specs>
+            </CardListItem.Content>
+            <aside>
+              <Dialog
+                open={selectedMealId === meal.id && isDeleteMealDialogOpen}
+                onOpenChange={(open) =>
+                  handleDeleteMealDialogOpenChange(open, meal.id)
+                }
+              >
+                <DialogTrigger className="w-4 h-4" asChild>
+                  <Button variant="ghost" size="icon">
+                    <TrashIcon className="w-1 h-1" color="red" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Tem certeza?</DialogTitle>
+                    <DialogDescription>
+                      Essa ação não pode ser desfeita.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <Button variant="outline">Cancelar</Button>
+                    <Button
+                      variant="destructive"
+                      onClick={() => deleteMeal(meal.id)}
+                    >
+                      Deletar
                     </Button>
-                  </DialogTrigger>
-                  <DialogContent>
-                    <DialogHeader>
-                      <DialogTitle>Tem certeza?</DialogTitle>
-                      <DialogDescription>
-                        Essa ação não pode ser desfeita.
-                      </DialogDescription>
-                    </DialogHeader>
-                    <DialogFooter>
-                      <Button variant="outline">Cancelar</Button>
-                      <Button
-                        variant="destructive"
-                        onClick={() => deleteMeal(meal.id)}
-                      >
-                        Deletar
-                      </Button>
-                    </DialogFooter>
-                  </DialogContent>
-                </Dialog>
-              </TableCell>
-            </TableRow>
-          ))}
-        </TableBody>
-      </Table>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </aside>
+          </CardListItem.Container>
+        ))}
+      </div>
     </div>
   );
 }
