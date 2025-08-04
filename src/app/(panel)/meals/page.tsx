@@ -93,8 +93,13 @@ export default function Meals() {
             <CardListItem.Content>
               <CardListItem.Header>
                 <h3 className="text-md font-bold">{meal.food.name}</h3>
-                <CardListItem.Badge>150g</CardListItem.Badge>
-                <CardListItem.Badge>24.5g proteínas</CardListItem.Badge>
+                <CardListItem.Badge>
+                  {meal.amount}
+                  {meal.food.portion_type === "grams" ? "g" : " unidade"}
+                </CardListItem.Badge>
+                <CardListItem.Badge>
+                  {meal.proteinConsumed}g proteínas
+                </CardListItem.Badge>
               </CardListItem.Header>
               <CardListItem.Specs className="flex gap-2">
                 <CardListItem.Spec>

@@ -11,7 +11,7 @@ export function CardListItemSpecs({
   ...props
 }: CardListItemSpecsProps) {
   return (
-    <div className={cn("flex gap-2", className)} {...props}>
+    <div className={cn("flex gap-3", className)} {...props}>
       {children}
     </div>
   );

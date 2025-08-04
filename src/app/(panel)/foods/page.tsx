@@ -10,24 +10,16 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
-import { PencilIcon, PlusIcon, TrashIcon } from "lucide-react";
+import { BicepsFlexed, PlusIcon, Scale, TrashIcon } from "lucide-react";
 import { FoodsResponse } from "@/@types/dtos";
 import { PageHeader } from "@/components/PageHeader";
-import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableHeader,
-  TableRow,
-} from "@/components/ui/table";
 import { api } from "@/services/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { toast } from "sonner";
 import { NewFoodDialog } from "@/components/NewFoodDialog";
 import { foodsQueryKeys } from "@/services/queries/foods";
+import { CardListItem } from "@/components/CardListItem";
 
 export default function Foods() {
   const queryClient = useQueryClient();
@@ -73,73 +65,63 @@ export default function Foods() {
           </NewFoodDialog>
         }
       />
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className="w-[100px]">Nome</TableHead>
-            <TableHead>Tipo</TableHead>
-            <TableHead>Quantidade (porção)</TableHead>
-            <TableHead>Proteína (porção)</TableHead>
-            <TableHead className="text-right">Ações</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {data?.foods.length === 0 ? (
-            <TableRow className="hover:bg-transparent">
-              <TableCell colSpan={5} className="text-center py-4">
-                Nenhum alimento cadastrado
-              </TableCell>
-            </TableRow>
-          ) : (
-            data?.foods.map((food) => {
-              return (
-                <TableRow key={food.id}>
-                  <TableCell>{food.name}</TableCell>
-                  <TableCell>
-                    <Badge variant="secondary">
-                      {food.portion_type === "grams" ? "Gramas" : "Unidade"}
-                    </Badge>
-                  </TableCell>
-                  <TableCell>{food.portion_amount}</TableCell>
-                  <TableCell>{food.protein_per_portion}g</TableCell>
-                  <TableCell className="text-right">
-                    <Button variant="ghost" size="icon">
-                      <PencilIcon className="w-1 h-1" />
+
+      <div className="flex flex-col gap-2">
+        {data?.foods.map((food) => (
+          <CardListItem.Container key={food.id}>
+            <CardListItem.Content>
+              <CardListItem.Header>
+                <h3 className="text-md font-bold">{food.name}</h3>
+                <CardListItem.Badge>
+                  {food.portion_type === "grams" ? "Gramas" : "Unidade"}
+                </CardListItem.Badge>
+              </CardListItem.Header>
+              <CardListItem.Specs>
+                <CardListItem.Spec>
+                  <Scale className="w-3 h-3" />
+                  <span className="text-xs">
+                    {food.portion_amount}
+                    {food.portion_type === "grams" ? "g" : " unidade"}
+                  </span>
+                </CardListItem.Spec>
+                <CardListItem.Spec>
+                  <BicepsFlexed className="w-3 h-3" />
+                  <span className="text-xs">{food.protein_per_portion}g</span>
+                </CardListItem.Spec>
+              </CardListItem.Specs>
+            </CardListItem.Content>
+            <aside>
+              <Dialog>
+                <DialogTrigger className="w-4 h-4" asChild>
+                  <Button variant="ghost" size="icon">
+                    <TrashIcon className="w-1 h-1" color="red" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent>
+                  <DialogHeader>
+                    <DialogTitle>Tem certeza?</DialogTitle>
+                    <DialogDescription>
+                      Essa ação não pode ser desfeita. Isso irá deletar o
+                      alimento e todas as refeições relacionadas a ele.
+                    </DialogDescription>
+                  </DialogHeader>
+                  <DialogFooter>
+                    <DialogClose asChild>
+                      <Button variant="outline">Cancelar</Button>
+                    </DialogClose>
+                    <Button
+                      variant="destructive"
+                      onClick={() => deleteFood(food.id)}
+                    >
+                      Deletar
                     </Button>
-                    <Dialog>
-                      <DialogTrigger asChild>
-                        <Button variant="ghost" size="icon">
-                          <TrashIcon className="w-1 h-1" color="red" />
-                        </Button>
-                      </DialogTrigger>
-                      <DialogContent>
-                        <DialogHeader>
-                          <DialogTitle>Tem certeza?</DialogTitle>
-                          <DialogDescription>
-                            Essa ação não pode ser desfeita. Isso irá deletar o
-                            alimento e todas as refeições relacionadas a ele.
-                          </DialogDescription>
-                        </DialogHeader>
-                        <DialogFooter>
-                          <DialogClose asChild>
-                            <Button variant="outline">Cancelar</Button>
-                          </DialogClose>
-                          <Button
-                            variant="destructive"
-                            onClick={() => deleteFood(food.id)}
-                          >
-                            Deletar
-                          </Button>
-                        </DialogFooter>
-                      </DialogContent>
-                    </Dialog>
-                  </TableCell>
-                </TableRow>
-              );
-            })
-          )}
-        </TableBody>
-      </Table>
+                  </DialogFooter>
+                </DialogContent>
+              </Dialog>
+            </aside>
+          </CardListItem.Container>
+        ))}
+      </div>
     </div>
   );
 }
