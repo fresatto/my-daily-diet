@@ -4,12 +4,13 @@ import {
   useQuery,
   useQueryClient,
 } from "@tanstack/react-query";
+import { format } from "date-fns";
+import { toast } from "sonner";
 
 import { api } from "@/services/api";
 import { Meal, MealsResponse, Period } from "@/@types/dtos";
 import { CreateMealSchema } from "@/components/NewMealDialog/schema";
 import { parseDateToLocalUTC } from "@/lib/date";
-import { format } from "date-fns";
 
 type MealsQueryFilters = {
   period?: Period;
@@ -40,6 +41,14 @@ export const useMealsQuery = (filters?: MealsQueryFilters) => {
         params: filters,
       });
 
+      if (response.status !== 200) {
+        toast.error("Erro ao buscar refeições");
+
+        return {
+          meals: [],
+        };
+      }
+
       return response.data;
     },
     select: (data) => {
@@ -61,7 +70,7 @@ export const useMealsQuery = (filters?: MealsQueryFilters) => {
         meals,
       };
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5, // 5 minutes,
   });
 };
 
@@ -95,6 +104,9 @@ export const useCreateMealMutation = ({
       if (onSuccess) {
         onSuccess(variables, data, context);
       }
+    },
+    onError: () => {
+      toast.error("Erro ao cadastrar refeição");
     },
     ...mutationsProps,
   });
