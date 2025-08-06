@@ -60,7 +60,7 @@ export function NewMealDialog({ children }: NewMealDialogProps) {
                       <SelectContent>
                         {foods?.map((food) => (
                           <SelectItem key={food.id} value={food.id}>
-                            {food.name}
+                            {food.name} ({food.formattedPortionType})
                           </SelectItem>
                         ))}
                       </SelectContent>

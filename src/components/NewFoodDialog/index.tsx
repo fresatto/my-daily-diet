@@ -150,7 +150,11 @@ export function NewFoodDialog({ children }: NewFoodDialogProps) {
                 <FormItem>
                   <FormLabel>Quantidade p/ porção</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Quantidade por porção" />
+                    <Input
+                      {...field}
+                      placeholder="Quantidade por porção"
+                      type="number"
+                    />
                   </FormControl>
                   {error && <FormMessage>{error.message}</FormMessage>}
                 </FormItem>
@@ -163,7 +167,11 @@ export function NewFoodDialog({ children }: NewFoodDialogProps) {
                 <FormItem>
                   <FormLabel>Proteína p/ porção</FormLabel>
                   <FormControl>
-                    <Input {...field} placeholder="Proteína por porção" />
+                    <Input
+                      {...field}
+                      placeholder="Proteína por porção"
+                      type="number"
+                    />
                   </FormControl>
                   {error && <FormMessage>{error.message}</FormMessage>}
                 </FormItem>

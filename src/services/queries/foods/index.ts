@@ -9,7 +9,10 @@ export const foodsQueryKeys = {
 };
 
 export function useFoodsQuery(
-  queryProps?: Omit<UseQueryOptions<FoodsResponse>, "queryKey" | "queryFn">
+  queryProps?: Omit<
+    UseQueryOptions<FoodsResponse>,
+    "queryKey" | "queryFn" | "select"
+  >
 ) {
   return useQuery({
     queryKey: foodsQueryKeys.list(),
@@ -18,7 +21,22 @@ export function useFoodsQuery(
 
       return response.data;
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes
+    staleTime: 1000 * 60 * 5, // 5 minutes,
+    select: (data) => {
+      const formattedFoods = data.foods.map((food) => {
+        const formattedPortionType =
+          food.portion_type === "grams" ? "g" : "unidade";
+
+        return {
+          ...food,
+          formattedPortionType,
+        };
+      });
+
+      return {
+        foods: formattedFoods,
+      };
+    },
     ...queryProps,
   });
 }
