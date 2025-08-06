@@ -10,21 +10,22 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
+import { toast } from "sonner";
 import { BicepsFlexed, PlusIcon, Scale, TrashIcon } from "lucide-react";
 import { FoodsResponse } from "@/@types/dtos";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import { api } from "@/services/api";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
-import { toast } from "sonner";
 import { NewFoodDialog } from "@/components/NewFoodDialog";
 import { foodsQueryKeys } from "@/services/queries/foods";
 import { CardListItem } from "@/components/CardListItem";
+import { ListLoading } from "@/components/ListLoading";
 
 export default function Foods() {
   const queryClient = useQueryClient();
 
-  const { data } = useQuery({
+  const { data, isLoading } = useQuery({
     queryKey: foodsQueryKeys.list(),
     queryFn: async () => {
       const response = await api.get<FoodsResponse>("/food");
@@ -74,61 +75,64 @@ export default function Foods() {
             </p>
           </div>
         )}
-
-        {data?.foods.map((food) => (
-          <CardListItem.Container key={food.id}>
-            <CardListItem.Content>
-              <CardListItem.Header>
-                <h3 className="text-md font-bold">{food.name}</h3>
-                <CardListItem.Badge>
-                  {food.portion_type === "grams" ? "Gramas" : "Unidade"}
-                </CardListItem.Badge>
-              </CardListItem.Header>
-              <CardListItem.Specs>
-                <CardListItem.Spec>
-                  <Scale className="w-3 h-3" />
-                  <span className="text-xs">
-                    {food.portion_amount}
-                    {food.portion_type === "grams" ? "g" : " unidade"}
-                  </span>
-                </CardListItem.Spec>
-                <CardListItem.Spec>
-                  <BicepsFlexed className="w-3 h-3" />
-                  <span className="text-xs">{food.protein_per_portion}g</span>
-                </CardListItem.Spec>
-              </CardListItem.Specs>
-            </CardListItem.Content>
-            <aside>
-              <Dialog>
-                <DialogTrigger className="w-4 h-4" asChild>
-                  <Button variant="ghost" size="icon">
-                    <TrashIcon className="w-1 h-1" color="red" />
-                  </Button>
-                </DialogTrigger>
-                <DialogContent>
-                  <DialogHeader>
-                    <DialogTitle>Tem certeza?</DialogTitle>
-                    <DialogDescription>
-                      Essa ação não pode ser desfeita. Isso irá deletar o
-                      alimento e todas as refeições relacionadas a ele.
-                    </DialogDescription>
-                  </DialogHeader>
-                  <DialogFooter>
-                    <DialogClose asChild>
-                      <Button variant="outline">Cancelar</Button>
-                    </DialogClose>
-                    <Button
-                      variant="destructive"
-                      onClick={() => deleteFood(food.id)}
-                    >
-                      Deletar
+        {isLoading ? (
+          <ListLoading />
+        ) : (
+          data?.foods.map((food) => (
+            <CardListItem.Container key={food.id}>
+              <CardListItem.Content>
+                <CardListItem.Header>
+                  <h3 className="text-md font-bold">{food.name}</h3>
+                  <CardListItem.Badge>
+                    {food.portion_type === "grams" ? "Gramas" : "Unidade"}
+                  </CardListItem.Badge>
+                </CardListItem.Header>
+                <CardListItem.Specs>
+                  <CardListItem.Spec>
+                    <Scale className="w-3 h-3" />
+                    <span className="text-xs">
+                      {food.portion_amount}
+                      {food.portion_type === "grams" ? "g" : " unidade"}
+                    </span>
+                  </CardListItem.Spec>
+                  <CardListItem.Spec>
+                    <BicepsFlexed className="w-3 h-3" />
+                    <span className="text-xs">{food.protein_per_portion}g</span>
+                  </CardListItem.Spec>
+                </CardListItem.Specs>
+              </CardListItem.Content>
+              <aside>
+                <Dialog>
+                  <DialogTrigger className="w-4 h-4" asChild>
+                    <Button variant="ghost" size="icon">
+                      <TrashIcon className="w-1 h-1" color="red" />
                     </Button>
-                  </DialogFooter>
-                </DialogContent>
-              </Dialog>
-            </aside>
-          </CardListItem.Container>
-        ))}
+                  </DialogTrigger>
+                  <DialogContent>
+                    <DialogHeader>
+                      <DialogTitle>Tem certeza?</DialogTitle>
+                      <DialogDescription>
+                        Essa ação não pode ser desfeita. Isso irá deletar o
+                        alimento e todas as refeições relacionadas a ele.
+                      </DialogDescription>
+                    </DialogHeader>
+                    <DialogFooter>
+                      <DialogClose asChild>
+                        <Button variant="outline">Cancelar</Button>
+                      </DialogClose>
+                      <Button
+                        variant="destructive"
+                        onClick={() => deleteFood(food.id)}
+                      >
+                        Deletar
+                      </Button>
+                    </DialogFooter>
+                  </DialogContent>
+                </Dialog>
+              </aside>
+            </CardListItem.Container>
+          ))
+        )}
       </div>
     </div>
   );
