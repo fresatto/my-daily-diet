@@ -16,23 +16,16 @@ import { FoodsResponse } from "@/@types/dtos";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
 import { api } from "@/services/api";
-import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
+import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { NewFoodDialog } from "@/components/NewFoodDialog";
-import { foodsQueryKeys } from "@/services/queries/foods";
+import { useFoodsQuery } from "@/services/queries/foods";
 import { CardListItem } from "@/components/CardListItem";
 import { ListLoading } from "@/components/ListLoading";
 
 export default function Foods() {
   const queryClient = useQueryClient();
 
-  const { data, isLoading } = useQuery({
-    queryKey: foodsQueryKeys.list(),
-    queryFn: async () => {
-      const response = await api.get<FoodsResponse>("/food");
-
-      return response.data;
-    },
-  });
+  const { data, isLoading } = useFoodsQuery();
 
   const { mutate: deleteFood } = useMutation({
     mutationFn: async (foodId: string) => {
