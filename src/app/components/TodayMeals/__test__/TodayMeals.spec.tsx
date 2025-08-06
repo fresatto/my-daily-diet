@@ -1,10 +1,15 @@
-import { describe, expect, it } from "vitest";
-import { render, screen } from "@testing-library/react";
+import { afterEach, describe, expect, it } from "vitest";
+import { cleanup, screen } from "@testing-library/react";
 
+import { mealsMock } from "@/__tests__/__mocks__/meal";
+import { render } from "@/__tests__/customRender";
 import { TodayMeals } from "../index";
-import { mealsMock } from "../../../../../__tests__/__mocks__/meal";
 
 describe("HOME | components/TodayMeals", () => {
+  afterEach(() => {
+    cleanup();
+  });
+
   it("should render empty state correctly", () => {
     render(<TodayMeals />);
 

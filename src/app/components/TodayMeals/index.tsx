@@ -2,8 +2,8 @@ import React from "react";
 import { Utensils } from "lucide-react";
 
 import { Meal } from "@/@types/dtos";
-import { Button } from "@/components/ui/button";
 import { NewMealDialog } from "@/components/NewMealDialog";
+import { Button } from "@/components/ui/button";
 
 type FormattedMeal = Meal & {
   formattedTime: string;
@@ -14,6 +14,8 @@ type TodayMealsProps = {
 };
 
 export const TodayMeals: React.FC<TodayMealsProps> = ({ meals }) => {
+  const shouldRenderEmptyState = !meals || meals?.length === 0;
+
   return (
     <div className="flex flex-col gap-4 p-6 bg-white rounded-lg border border-gray-200">
       <div className="flex items-center gap-2">
@@ -21,7 +23,7 @@ export const TodayMeals: React.FC<TodayMealsProps> = ({ meals }) => {
         <h3 className="text-sm font-bold">Refeições de hoje</h3>
       </div>
 
-      {meals?.length === 0 && (
+      {shouldRenderEmptyState && (
         <div className="flex flex-col">
           <p className="text-sm text-gray-500">
             Nenhuma refeição cadastrada. Clique no botão abaixo para cadastrar.
