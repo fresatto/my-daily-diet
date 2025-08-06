@@ -80,6 +80,7 @@ export function NewMealDialog({ children }: NewMealDialogProps) {
                     <Input
                       {...field}
                       placeholder="Quantidade (gramas ou unidade)"
+                      type="number"
                     />
                   </FormControl>
                   {error && <FormMessage>{error.message}</FormMessage>}

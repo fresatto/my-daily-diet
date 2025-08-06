@@ -1,9 +1,10 @@
+import Link from "next/link";
 import type { Metadata } from "next";
 import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
 import { Providers } from "./providers";
 import { Toaster } from "sonner";
-import Link from "next/link";
+
+import "./globals.css";
 
 import {
   NavigationMenu,
@@ -49,12 +50,12 @@ export default function RootLayout({
                   <NavigationMenuList className="flex gap-3">
                     <NavigationMenuItem>
                       <NavigationMenuLink asChild>
-                        <NavLink href="/foods">Alimentos</NavLink>
+                        <NavLink href="/meals">Refeições</NavLink>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
                     <NavigationMenuItem>
                       <NavigationMenuLink asChild>
-                        <NavLink href="/meals">Refeições</NavLink>
+                        <NavLink href="/foods">Alimentos</NavLink>
                       </NavigationMenuLink>
                     </NavigationMenuItem>
                     <NavigationMenuItem>
