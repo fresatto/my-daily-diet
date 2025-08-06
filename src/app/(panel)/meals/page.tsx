@@ -28,10 +28,15 @@ import { NewMealDialog } from "@/components/NewMealDialog";
 import { useDeleteMealMutation, useMealsQuery } from "@/services/queries/meals";
 import { CardListItem } from "@/components/CardListItem";
 import { ListLoading } from "@/components/ListLoading";
+import { useRouter, useSearchParams } from "next/navigation";
 
 export default function Meals() {
+  const router = useRouter();
+  const searchParams = useSearchParams();
+  const period = searchParams.get("period");
+
   const [selectedPeriod, setSelectedPeriod] = useState<Period | undefined>(
-    Period.TODAY
+    period ? (period as Period) : Period.TODAY
   );
 
   const [selectedMealId, setSelectedMealId] = useState<string>();
@@ -44,6 +49,7 @@ export default function Meals() {
 
   const handlePeriodChange = (period: Period) => {
     setSelectedPeriod(period);
+    router.push(`/meals?period=${period}`);
   };
 
   const { data, isLoading } = useMealsQuery({
@@ -65,7 +71,7 @@ export default function Meals() {
           action={
             <div className="flex gap-2">
               <Select
-                defaultValue={Period.TODAY}
+                value={selectedPeriod}
                 onValueChange={(value: Period) => handlePeriodChange(value)}
               >
                 <SelectTrigger>
