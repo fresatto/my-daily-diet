@@ -88,6 +88,14 @@ export default function Meals() {
         }
       />
       <div className="flex flex-col gap-2">
+        {data?.meals.length === 0 && (
+          <div className="flex flex-col items-center justify-center h-full">
+            <p className="text-sm text-muted-foreground">
+              Nenhuma refeição cadastrada.
+            </p>
+          </div>
+        )}
+
         {data?.meals.map((meal) => (
           <CardListItem.Container key={meal.id}>
             <CardListItem.Content>

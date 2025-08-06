@@ -67,6 +67,14 @@ export default function Foods() {
       />
 
       <div className="flex flex-col gap-2">
+        {data?.foods.length === 0 && (
+          <div className="flex flex-col items-center justify-center h-full">
+            <p className="text-sm text-muted-foreground">
+              Nenhum alimento cadastrado.
+            </p>
+          </div>
+        )}
+
         {data?.foods.map((food) => (
           <CardListItem.Container key={food.id}>
             <CardListItem.Content>
