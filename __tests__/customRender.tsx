@@ -9,7 +9,8 @@ export const render = (
     defaultOptions: {
       queries: {
         retry: false,
-        gcTime: 0,
+        gcTime: Infinity,
+        staleTime: 0,
       },
     },
   });

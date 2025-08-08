@@ -24,7 +24,9 @@ export const DailyGoalCard: React.FC<DailyGoalCardProps> = ({
         <strong data-testid="daily-protein-consumed">
           {dailyProteinConsumed}g
         </strong>
-        <small>de {dailyGoalProtein}g meta diária</small>
+        <small data-testid="daily-goal-protein">
+          de {dailyGoalProtein}g meta diária
+        </small>
       </div>
       <div className="flex flex-col gap-2">
         <Progress value={Number(dailyGoalPercentage)} />
