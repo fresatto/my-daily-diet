@@ -56,6 +56,7 @@ export function useDashboardController() {
   ).toFixed(0);
 
   return {
+    data,
     todayFormattedDate,
     dailyGoalProtein,
     dailyGoalPercentage,
