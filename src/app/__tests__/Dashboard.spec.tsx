@@ -119,7 +119,9 @@ describe("Home", () => {
       }
     });
 
-    vi.spyOn(api, "post");
+    vi.spyOn(api, "post").mockResolvedValue({
+      status: 201,
+    });
 
     render(<Home />);
 

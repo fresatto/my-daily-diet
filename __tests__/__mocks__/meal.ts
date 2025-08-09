@@ -1,4 +1,17 @@
-import { MealsResponse } from "@/@types/dtos";
+import { Meal, MealsResponse } from "@/@types/dtos";
+
+export const newMealMock: Meal = {
+  id: "1",
+  amount: 100,
+  created_at: "2025-08-06 00:41:04",
+  proteinConsumed: 100,
+  food: {
+    name: "Nova Refeição Cadastrada",
+    portion_type: "unit",
+    portion_amount: 100,
+    protein_per_portion: 10,
+  },
+};
 
 export const mealsMock: MealsResponse = {
   meals: [
