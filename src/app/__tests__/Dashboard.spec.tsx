@@ -1,5 +1,5 @@
 import { afterEach, describe, expect, it, vi } from "vitest";
-import { screen, waitFor, cleanup } from "@testing-library/react";
+import { screen, waitFor, cleanup, fireEvent } from "@testing-library/react";
 
 import Home from "../page";
 import { api } from "@/services/api";
@@ -77,7 +77,7 @@ describe("Home", () => {
     });
   });
 
-  it.only("should be able to render empty meals", async () => {
+  it("should be able to render empty meals", async () => {
     vi.spyOn(api, "get").mockResolvedValue({ status: 200, data: [] });
 
     render(<Home />);
@@ -89,5 +89,23 @@ describe("Home", () => {
         )
       ).toBeTruthy();
     });
+  });
+
+  it.only("should be able to add a new meal from dashboard", async () => {
+    render(<Home />);
+
+    const newMealButton = screen.getByTestId("new-meal-button");
+
+    fireEvent.click(newMealButton);
+
+    const dialogTitle = await screen.findByTestId("new-meal-dialog-title");
+    const amountInput = screen.getByTestId("new-meal-dialog-amount-input");
+    const selectFoodInput = screen.getByTestId(
+      "new-meal-dialog-select-food-input"
+    );
+
+    expect(dialogTitle).toBeTruthy();
+    expect(amountInput).toBeTruthy();
+    expect(selectFoodInput).toBeTruthy();
   });
 });

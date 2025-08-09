@@ -50,7 +50,7 @@ export const TodayMeals: React.FC<TodayMealsProps> = ({ meals }) => {
       ))}
 
       <NewMealDialog>
-        <Button>Nova refeição</Button>
+        <Button data-testid="new-meal-button">Nova refeição</Button>
       </NewMealDialog>
     </div>
   );

@@ -39,7 +39,9 @@ export function NewMealDialog({ children }: NewMealDialogProps) {
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Nova refeição</DialogTitle>
+          <DialogTitle data-testid="new-meal-dialog-title">
+            Nova refeição
+          </DialogTitle>
         </DialogHeader>
         <Form {...form}>
           <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
@@ -54,12 +56,17 @@ export function NewMealDialog({ children }: NewMealDialogProps) {
                       <SelectTrigger
                         {...field}
                         className={cn("w-full", error && "border-destructive")}
+                        data-testid="new-meal-dialog-select-food-input"
                       >
                         <SelectValue placeholder="Selecione o alimento" />
                       </SelectTrigger>
                       <SelectContent>
-                        {foods?.map((food) => (
-                          <SelectItem key={food.id} value={food.id}>
+                        {foods?.map((food, index) => (
+                          <SelectItem
+                            key={food.id}
+                            value={food.id}
+                            data-testid={`new-meal-food-option-${index}`}
+                          >
                             {food.name} ({food.formattedPortionType})
                           </SelectItem>
                         ))}
@@ -79,6 +86,7 @@ export function NewMealDialog({ children }: NewMealDialogProps) {
                   <FormControl>
                     <Input
                       {...field}
+                      data-testid="new-meal-dialog-amount-input"
                       placeholder="Quantidade (gramas ou unidade)"
                       type="number"
                     />
