@@ -37,7 +37,7 @@ export function NewMealDialog({ children }: NewMealDialogProps) {
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent>
+      <DialogContent data-testid="new-meal-dialog-content">
         <DialogHeader>
           <DialogTitle data-testid="new-meal-dialog-title">
             Nova refeição
@@ -61,13 +61,11 @@ export function NewMealDialog({ children }: NewMealDialogProps) {
                         <SelectValue placeholder="Selecione o alimento" />
                       </SelectTrigger>
                       <SelectContent>
-                        {foods?.map((food, index) => (
-                          <SelectItem
-                            key={food.id}
-                            value={food.id}
-                            data-testid={`new-meal-food-option-${index}`}
-                          >
-                            {food.name} ({food.formattedPortionType})
+                        {foods?.map((food) => (
+                          <SelectItem key={food.id} value={food.id}>
+                            <span data-testid="new-meal-food-option">
+                              {food.name} ({food.formattedPortionType})
+                            </span>
                           </SelectItem>
                         ))}
                       </SelectContent>
@@ -95,7 +93,9 @@ export function NewMealDialog({ children }: NewMealDialogProps) {
                 </FormItem>
               )}
             />
-            <Button type="submit">Cadastrar</Button>
+            <Button type="submit" data-testid="new-meal-dialog-submit-button">
+              Cadastrar
+            </Button>
           </form>
         </Form>
       </DialogContent>

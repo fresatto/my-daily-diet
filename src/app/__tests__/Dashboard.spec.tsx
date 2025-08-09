@@ -9,6 +9,7 @@ import {
   dailyGoalSummaryMock,
 } from "@/__tests__/__mocks__/daily-goal";
 import { mealsMock } from "@/__tests__/__mocks__/meal";
+import { foodsMock } from "@/__tests__/__mocks__/food";
 
 describe("Home", () => {
   afterEach(() => {
@@ -91,21 +92,67 @@ describe("Home", () => {
     });
   });
 
-  it.only("should be able to add a new meal from dashboard", async () => {
+  it("should be able to display new meal dialog errors correctly", async () => {
     render(<Home />);
 
     const newMealButton = screen.getByTestId("new-meal-button");
 
     fireEvent.click(newMealButton);
 
-    const dialogTitle = await screen.findByTestId("new-meal-dialog-title");
-    const amountInput = screen.getByTestId("new-meal-dialog-amount-input");
-    const selectFoodInput = screen.getByTestId(
-      "new-meal-dialog-select-food-input"
-    );
+    const submitButton = screen.getByTestId("new-meal-dialog-submit-button");
 
-    expect(dialogTitle).toBeTruthy();
+    fireEvent.submit(submitButton);
+
+    await waitFor(() => {
+      expect(screen.getByText("Alimento é obrigatório")).toBeTruthy();
+      expect(screen.getByText("Campo obrigatório")).toBeTruthy();
+    });
+  });
+
+  it("should be able to register a new meal", async () => {
+    vi.spyOn(api, "get").mockImplementationOnce((url) => {
+      switch (url) {
+        case "/food":
+          return Promise.resolve({ data: foodsMock });
+        default:
+          return Promise.resolve({ data: [] });
+      }
+    });
+
+    vi.spyOn(api, "post");
+
+    render(<Home />);
+
+    await waitFor(() => {
+      expect(api.get).toHaveBeenCalledWith("/food");
+    });
+
+    const newMealButton = screen.getByTestId("new-meal-button");
+
+    fireEvent.click(newMealButton);
+
+    const selectFoodInput = document.querySelector('select[name="food_id"]');
+    const firstFoodOption = screen.getByText("Frango (g)");
+    const amountInput = screen.getByTestId("new-meal-dialog-amount-input");
+    const submitButton = screen.getByTestId("new-meal-dialog-submit-button");
+
     expect(amountInput).toBeTruthy();
     expect(selectFoodInput).toBeTruthy();
+    expect(firstFoodOption).toBeTruthy();
+    expect(selectFoodInput).toBeTruthy();
+
+    fireEvent.change(amountInput, { target: { value: "100" } });
+    fireEvent.change(selectFoodInput!, {
+      target: { value: foodsMock.foods[0].id },
+    });
+
+    fireEvent.submit(submitButton);
+
+    await waitFor(() => {
+      expect(api.post).toBeCalledWith("/meals", {
+        food_id: foodsMock.foods[0].id,
+        amount: 100,
+      });
+    });
   });
 });
