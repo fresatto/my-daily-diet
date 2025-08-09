@@ -21,7 +21,7 @@ describe("HOME | components/TodayMeals", () => {
   });
 
   it("should render meals correctly", () => {
-    const formattedMeals = mealsMock.map((meal) => ({
+    const formattedMeals = mealsMock.meals.map((meal) => ({
       ...meal,
       formattedTime: "às 10:00",
     }));
@@ -30,8 +30,8 @@ describe("HOME | components/TodayMeals", () => {
 
     expect(screen.getByText("Refeições de hoje")).toBeTruthy();
     expect(screen.getByText("Arroz")).toBeTruthy();
-    expect(screen.getByText("às 10:00")).toBeTruthy();
-    expect(screen.getByText("100g")).toBeTruthy();
-    expect(screen.getByText("proteína")).toBeTruthy();
+    expect(screen.getAllByText("às 10:00")).toBeTruthy();
+    expect(screen.getAllByText("100g")).toBeTruthy();
+    expect(screen.getAllByText("proteína")).toBeTruthy();
   });
 });

@@ -32,12 +32,15 @@ export const TodayMeals: React.FC<TodayMealsProps> = ({ meals }) => {
       )}
       {meals?.map((meal) => (
         <div
+          data-testid="meal-card"
           key={meal.id}
           className="flex py-3 px-4 justify-between items-center rounded-lg bg-gray-100"
         >
           <div className="flex flex-col">
-            <h3 className="text-sm font-bold">{meal.food.name}</h3>
-            <small>{meal.formattedTime}</small>
+            <h3 data-testid="meal-name" className="text-sm font-bold">
+              {meal.food.name}
+            </h3>
+            <small data-testid="meal-time">{meal.formattedTime}</small>
           </div>
           <div className="flex flex-col items-end text-xs">
             <p className="font-bold">{meal.proteinConsumed}g</p>
