@@ -8,7 +8,6 @@ import {
   dailyGoalMock,
   dailyGoalSummaryMock,
 } from "@/__tests__/__mocks__/daily-goal";
-import { mealsMock } from "@/__tests__/__mocks__/meal";
 import { foodsMock } from "@/__tests__/__mocks__/food";
 
 describe("Home", () => {
@@ -17,21 +16,6 @@ describe("Home", () => {
   });
 
   it("should render consumed protein dashboard correctly", async () => {
-    vi.spyOn(api, "get").mockImplementation((url) => {
-      switch (url) {
-        case "/daily-goal":
-          return Promise.resolve({ data: dailyGoalMock });
-        case "/daily-goal/summary":
-          return Promise.resolve({
-            data: dailyGoalSummaryMock,
-          });
-        case "/meals":
-          return Promise.resolve({ status: 200, data: { meals: [] } }); // Mock vazio para este teste
-        default:
-          return Promise.resolve({ data: [] });
-      }
-    });
-
     render(<Home />);
 
     await waitFor(() => {
@@ -54,21 +38,6 @@ describe("Home", () => {
   });
 
   it("should be able to render meals correctly", async () => {
-    vi.spyOn(api, "get").mockImplementation((url) => {
-      switch (url) {
-        case "/daily-goal":
-          return Promise.resolve({ data: dailyGoalMock });
-        case "/daily-goal/summary":
-          return Promise.resolve({
-            data: dailyGoalSummaryMock,
-          });
-        case "/meals":
-          return Promise.resolve({ status: 200, data: mealsMock });
-        default:
-          return Promise.resolve({ data: [] });
-      }
-    });
-
     const rendered = render(<Home />);
 
     await waitFor(() => {
