@@ -3,7 +3,7 @@ import { http, HttpResponse } from "msw";
 import { api } from "@/services/api";
 import { foodsMock } from "./foods";
 import { mealsMock, newMealMock } from "./meals";
-import { dailyGoalMock, dailyGoalSummaryMock } from "./daily-goal-2";
+import { dailyGoalMock, dailyGoalSummaryMock } from "./daily-goal";
 
 const baseURL = api.defaults.baseURL;
 

@@ -5,13 +5,13 @@ import { screen, waitFor, cleanup, fireEvent } from "@testing-library/react";
 import Home from "../page";
 import { api } from "@/services/api";
 import { render } from "@/__tests__/customRender";
+import { server } from "@/__tests__/__mocks__/node";
+import { newMealMock } from "@/__tests__/__mocks__/meals";
 import {
   dailyGoalMock,
   dailyGoalSummaryMock,
 } from "@/__tests__/__mocks__/daily-goal";
-import { foodsMock } from "@/__tests__/__mocks__/food";
-import { server } from "@/__tests__/__mocks__/node";
-import { newMealMock } from "@/__tests__/__mocks__/meals";
+import { foodsMock } from "@/__tests__/__mocks__/foods";
 
 describe("Home", () => {
   afterEach(() => {
