@@ -1,3 +1,4 @@
+import { http, HttpResponse } from "msw";
 import { afterEach, describe, expect, it, vi } from "vitest";
 import { screen, waitFor, cleanup, fireEvent } from "@testing-library/react";
 
@@ -9,6 +10,7 @@ import {
   dailyGoalSummaryMock,
 } from "@/__tests__/__mocks__/daily-goal";
 import { foodsMock } from "@/__tests__/__mocks__/food";
+import { server } from "@/__tests__/__mocks__/node";
 
 describe("Home", () => {
   afterEach(() => {
@@ -47,8 +49,12 @@ describe("Home", () => {
     });
   });
 
-  it("should be able to render empty meals", async () => {
-    vi.spyOn(api, "get").mockResolvedValue({ status: 200, data: [] });
+  it.only("should be able to render empty meals", async () => {
+    server.use(
+      http.get(`${api.defaults.baseURL}/meals`, () => {
+        return HttpResponse.json([]);
+      })
+    );
 
     render(<Home />);
 

@@ -31,7 +31,7 @@ export function useDashboardController() {
     },
   });
 
-  const { data: mealsData } = useMealsQuery({
+  const { data: mealsData, isFetching } = useMealsQuery({
     period: Period.TODAY,
   });
 
@@ -62,5 +62,6 @@ export function useDashboardController() {
     dailyGoalPercentage,
     dailyProteinConsumed,
     mealsData,
+    isFetchingMeals: isFetching,
   };
 }
