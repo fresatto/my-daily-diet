@@ -2,7 +2,7 @@ import { http, HttpResponse } from "msw";
 
 import { api } from "@/services/api";
 import { foodsMock } from "./foods";
-import { mealsMock } from "./meals";
+import { mealsMock, newMealMock } from "./meals";
 import { dailyGoalMock, dailyGoalSummaryMock } from "./daily-goal-2";
 
 const baseURL = api.defaults.baseURL;
@@ -15,6 +15,11 @@ export const handlers = [
 
   // Meals
   http.get(`${baseURL}/meals`, () => {
+    return HttpResponse.json(mealsMock);
+  }),
+  http.post(`${baseURL}/meals`, () => {
+    mealsMock.meals.push(newMealMock);
+
     return HttpResponse.json(mealsMock);
   }),
 

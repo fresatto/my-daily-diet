@@ -20,7 +20,9 @@ export const TodayMeals: React.FC<TodayMealsProps> = ({ meals, isLoading }) => {
 
   const renderTodayMealsContent = () => {
     if (isLoading) {
-      return <Skeleton className="h-10 w-full" />;
+      return (
+        <Skeleton data-testid="today-meals-loading" className="h-10 w-full" />
+      );
     }
 
     if (shouldRenderEmptyState) {

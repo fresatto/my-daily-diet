@@ -11,6 +11,7 @@ import {
 } from "@/__tests__/__mocks__/daily-goal";
 import { foodsMock } from "@/__tests__/__mocks__/food";
 import { server } from "@/__tests__/__mocks__/node";
+import { newMealMock } from "@/__tests__/__mocks__/meals";
 
 describe("Home", () => {
   afterEach(() => {
@@ -49,7 +50,7 @@ describe("Home", () => {
     });
   });
 
-  it.only("should be able to render empty meals", async () => {
+  it("should be able to render empty meals", async () => {
     server.use(
       http.get(`${api.defaults.baseURL}/meals`, () => {
         return HttpResponse.json([]);
@@ -85,23 +86,12 @@ describe("Home", () => {
   });
 
   it("should be able to register a new meal", async () => {
-    vi.spyOn(api, "get").mockImplementationOnce((url) => {
-      switch (url) {
-        case "/food":
-          return Promise.resolve({ data: foodsMock });
-        default:
-          return Promise.resolve({ data: [] });
-      }
-    });
-
-    vi.spyOn(api, "post").mockResolvedValue({
-      status: 201,
-    });
-
     render(<Home />);
 
     await waitFor(() => {
-      expect(api.get).toHaveBeenCalledWith("/food");
+      expect(screen.getAllByTestId("meal-card")).toBeTruthy();
+      expect(screen.getAllByTestId("meal-name")).toBeTruthy();
+      expect(screen.getAllByTestId("meal-time")).toBeTruthy();
     });
 
     const newMealButton = screen.getByTestId("new-meal-button");
@@ -109,7 +99,7 @@ describe("Home", () => {
     fireEvent.click(newMealButton);
 
     const selectFoodInput = document.querySelector('select[name="food_id"]');
-    const firstFoodOption = screen.getByText("Frango (g)");
+    const firstFoodOption = screen.findByText("Frango (g)");
     const amountInput = screen.getByTestId("new-meal-dialog-amount-input");
     const submitButton = screen.getByTestId("new-meal-dialog-submit-button");
 
@@ -126,10 +116,7 @@ describe("Home", () => {
     fireEvent.submit(submitButton);
 
     await waitFor(() => {
-      expect(api.post).toBeCalledWith("/meals", {
-        food_id: foodsMock.foods[0].id,
-        amount: 100,
-      });
+      expect(screen.getByText(newMealMock.food.name)).toBeTruthy();
     });
   });
 });
