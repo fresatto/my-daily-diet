@@ -1,5 +1,5 @@
 import { http, HttpResponse } from "msw";
-import { afterEach, describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it } from "vitest";
 import { screen, waitFor, cleanup, fireEvent } from "@testing-library/react";
 
 import Home from "../page";

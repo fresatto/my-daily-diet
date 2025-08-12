@@ -15,6 +15,8 @@ export default function Dashboard() {
     dailyGoalPercentage,
     dailyProteinConsumed,
     isFetchingMeals,
+    weekProgressData,
+    isFetchingWeekProgress,
   } = useDashboardController();
 
   return (
@@ -29,7 +31,10 @@ export default function Dashboard() {
         dailyGoalPercentage={Number(dailyGoalPercentage)}
       />
       <TodayMeals meals={mealsData?.meals} isLoading={isFetchingMeals} />
-      <WeekProgress />
+      <WeekProgress
+        weekProgress={weekProgressData?.weekProgress}
+        isLoading={isFetchingWeekProgress}
+      />
     </div>
   );
 }

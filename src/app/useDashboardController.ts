@@ -9,6 +9,7 @@ import {
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useMealsQuery } from "@/services/queries/meals";
+import { useWeekProgressQuery } from "@/services/queries/week-progress";
 
 export function useDashboardController() {
   const { data } = useQuery({
@@ -31,9 +32,12 @@ export function useDashboardController() {
     },
   });
 
-  const { data: mealsData, isFetching } = useMealsQuery({
+  const { data: mealsData, isFetching: isFetchingMeals } = useMealsQuery({
     period: Period.TODAY,
   });
+
+  const { data: weekProgressData, isFetching: isFetchingWeekProgress } =
+    useWeekProgressQuery();
 
   const getTodayFormattedDate = () => {
     const formattedDate = format(new Date(), "EEEE, d 'de' MMMM 'de' yyyy", {
@@ -62,6 +66,8 @@ export function useDashboardController() {
     dailyGoalPercentage,
     dailyProteinConsumed,
     mealsData,
-    isFetchingMeals: isFetching,
+    isFetchingMeals,
+    weekProgressData,
+    isFetchingWeekProgress,
   };
 }
