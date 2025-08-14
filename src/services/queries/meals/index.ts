@@ -11,6 +11,7 @@ import { api } from "@/services/api";
 import { Meal, MealsResponse, Period } from "@/@types/dtos";
 import { CreateMealSchema } from "@/components/NewMealDialog/schema";
 import { parseDateToLocalUTC } from "@/lib/date";
+import { weekProgressQueryKeys } from "../week-progress";
 
 type MealsQueryFilters = {
   period?: Period;
@@ -96,9 +97,15 @@ export const useCreateMealMutation = ({
     },
     onSuccess: (variables, data, context) => {
       queryClient.invalidateQueries({
-        queryKey: mealsQueryKeys.list({
-          period: Period.TODAY,
-        }),
+        queryKey: [
+          ...mealsQueryKeys.list({
+            period: Period.TODAY,
+          }),
+        ],
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: weekProgressQueryKeys.list(),
       });
 
       if (onSuccess) {
