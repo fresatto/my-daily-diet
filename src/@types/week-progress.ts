@@ -9,7 +9,7 @@ export enum WeekProgressDaysEnum {
 }
 
 export type WeekProgress = Record<
-  string,
+  WeekProgressDaysEnum,
   {
     total: number;
     goalAchieved: boolean;
