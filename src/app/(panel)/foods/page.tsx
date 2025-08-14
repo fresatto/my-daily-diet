@@ -10,41 +10,27 @@ import {
   DialogTrigger,
   DialogClose,
 } from "@/components/ui/dialog";
-import { toast } from "sonner";
-import { BicepsFlexed, PlusIcon, Scale, TrashIcon } from "lucide-react";
-import { FoodsResponse } from "@/@types/dtos";
+import {
+  BicepsFlexed,
+  LoaderCircle,
+  PlusIcon,
+  Scale,
+  TrashIcon,
+} from "lucide-react";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
-import { api } from "@/services/api";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
 import { NewFoodDialog } from "@/components/NewFoodDialog";
-import { useFoodsQuery } from "@/services/queries/foods";
+import { useDeleteFoodMutation, useFoodsQuery } from "@/services/queries/foods";
 import { CardListItem } from "@/components/CardListItem";
 import { ListLoading } from "@/components/ListLoading";
 
 export default function Foods() {
-  const queryClient = useQueryClient();
-
   const { data, isLoading } = useFoodsQuery();
-
-  const { mutate: deleteFood } = useMutation({
-    mutationFn: async (foodId: string) => {
-      await api.delete(`/food/${foodId}`);
-
-      return foodId;
-    },
-    onSuccess: (foodId) => {
-      const foods = queryClient.getQueryData<FoodsResponse>(["foods"]);
-
-      toast.success("Alimento deletado com sucesso");
-
-      if (foods) {
-        queryClient.setQueryData(["foods"], {
-          foods: foods.foods.filter((food) => food.id !== foodId),
-        });
-      }
-    },
-  });
+  const {
+    mutate: deleteFood,
+    variables: foodId,
+    isPending,
+  } = useDeleteFoodMutation();
 
   return (
     <div>
@@ -94,11 +80,15 @@ export default function Foods() {
                   </CardListItem.Spec>
                 </CardListItem.Specs>
               </CardListItem.Content>
-              <aside>
+              <aside className="w-4 h-4">
                 <Dialog>
                   <DialogTrigger className="w-4 h-4" asChild>
                     <Button variant="ghost" size="icon">
-                      <TrashIcon className="w-1 h-1" color="red" />
+                      {foodId === food.id && isPending ? (
+                        <LoaderCircle className="w-1 h-1 animate-spin" />
+                      ) : (
+                        <TrashIcon className="w-1 h-1" color="red" />
+                      )}
                     </Button>
                   </DialogTrigger>
                   <DialogContent>
@@ -113,12 +103,14 @@ export default function Foods() {
                       <DialogClose asChild>
                         <Button variant="outline">Cancelar</Button>
                       </DialogClose>
-                      <Button
-                        variant="destructive"
-                        onClick={() => deleteFood(food.id)}
-                      >
-                        Deletar
-                      </Button>
+                      <DialogClose asChild>
+                        <Button
+                          variant="destructive"
+                          onClick={() => deleteFood(food.id)}
+                        >
+                          Deletar
+                        </Button>
+                      </DialogClose>
                     </DialogFooter>
                   </DialogContent>
                 </Dialog>
