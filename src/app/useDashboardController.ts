@@ -1,36 +1,16 @@
-import { useQuery } from "@tanstack/react-query";
-
-import { api } from "@/services/api";
-import {
-  DailyGoalResponse,
-  DailyGoalSummaryResponse,
-  Period,
-} from "@/@types/dtos";
+import { Period } from "@/@types/dtos";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 import { useMealsQuery } from "@/services/queries/meals";
 import { useWeekProgressQuery } from "@/services/queries/week-progress";
+import {
+  useDailyGoalQuery,
+  useDailyGoalSummaryQuery,
+} from "@/services/queries/daily-goal";
 
 export function useDashboardController() {
-  const { data } = useQuery({
-    queryKey: ["daily-goal"],
-    queryFn: async () => {
-      const response = await api.get<DailyGoalResponse>("/daily-goal");
-
-      return response.data;
-    },
-  });
-
-  const { data: summary } = useQuery({
-    queryKey: ["daily-goal-summary"],
-    queryFn: async () => {
-      const response = await api.get<DailyGoalSummaryResponse>(
-        "/daily-goal/summary"
-      );
-
-      return response.data;
-    },
-  });
+  const { data } = useDailyGoalQuery();
+  const { data: summary } = useDailyGoalSummaryQuery();
 
   const { data: mealsData, isFetching: isFetchingMeals } = useMealsQuery({
     period: Period.TODAY,

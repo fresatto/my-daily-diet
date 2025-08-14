@@ -12,6 +12,7 @@ import { Meal, MealsResponse, Period } from "@/@types/dtos";
 import { CreateMealSchema } from "@/components/NewMealDialog/schema";
 import { parseDateToLocalUTC } from "@/lib/date";
 import { weekProgressQueryKeys } from "../week-progress";
+import { dailyGoalQueryKeys } from "../daily-goal";
 
 type MealsQueryFilters = {
   period?: Period;
@@ -106,6 +107,14 @@ export const useCreateMealMutation = ({
 
       queryClient.invalidateQueries({
         queryKey: weekProgressQueryKeys.list(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: dailyGoalQueryKeys.get(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: dailyGoalQueryKeys.getSummary(),
       });
 
       if (onSuccess) {
