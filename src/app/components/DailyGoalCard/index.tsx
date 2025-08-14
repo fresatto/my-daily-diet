@@ -14,6 +14,8 @@ export const DailyGoalCard: React.FC<DailyGoalCardProps> = ({
   dailyGoalProtein,
   dailyGoalPercentage,
 }) => {
+  const percentage = dailyGoalPercentage >= 100 ? 100 : dailyGoalPercentage;
+
   return (
     <div className="flex flex-col gap-4 p-6 bg-white rounded-lg border border-gray-200">
       <div className="flex items-center justify-between">
@@ -29,9 +31,9 @@ export const DailyGoalCard: React.FC<DailyGoalCardProps> = ({
         </small>
       </div>
       <div className="flex flex-col gap-2">
-        <Progress value={Number(dailyGoalPercentage)} />
+        <Progress value={Number(percentage)} />
         <small className="text-sm text-gray-500">
-          {dailyGoalPercentage}% do objetivo diário
+          {percentage}% do objetivo diário
         </small>
       </div>
     </div>
