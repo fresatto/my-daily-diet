@@ -144,23 +144,36 @@ export const useDeleteMealMutation = ({
       return id;
     },
     onSuccess: (deletedMealId, data, context) => {
-      const queryKey = mealsQueryKeys.list({
+      const listMealsQueryKey = mealsQueryKeys.list({
         // TODO: get the period from the query params
         period: Period.TODAY,
       });
 
-      const oldData = queryClient.getQueryData<MealsResponse>(queryKey);
+      const oldData =
+        queryClient.getQueryData<MealsResponse>(listMealsQueryKey);
 
       if (oldData) {
         const newData = oldData?.meals.filter(
           (meal) => meal.id !== deletedMealId
         );
 
-        queryClient.setQueryData<MealsResponse>(queryKey, {
+        queryClient.setQueryData<MealsResponse>(listMealsQueryKey, {
           ...oldData,
           meals: newData,
         });
       }
+
+      queryClient.invalidateQueries({
+        queryKey: weekProgressQueryKeys.list(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: dailyGoalQueryKeys.get(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: dailyGoalQueryKeys.getSummary(),
+      });
 
       if (onSuccess) {
         onSuccess(deletedMealId, data, context);
