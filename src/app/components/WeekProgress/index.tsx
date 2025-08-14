@@ -18,12 +18,12 @@ export const WeekProgress: React.FC<WeekProgressProps> = ({
     const days = Object.keys(weekProgress).map((day) => {
       const dailyGoalPercentage =
         weekProgress[day]?.dailyGoalPercentage >= 100
-          ? 95
+          ? 100
           : weekProgress[day]?.dailyGoalPercentage;
 
       return {
         day: day,
-        proteinsConsumed: weekProgress[day]?.total,
+        proteinsConsumed: weekProgress[day]?.total.toFixed(2),
         dailyGoalPercentage,
       };
     });
