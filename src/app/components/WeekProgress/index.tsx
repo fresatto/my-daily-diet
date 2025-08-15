@@ -7,7 +7,7 @@ import {
 import { Skeleton } from "@/components/ui/skeleton";
 
 type WeekProgressProps = {
-  weekProgress: WeekProgressType;
+  weekProgress?: WeekProgressType;
   isLoading?: boolean;
 };
 

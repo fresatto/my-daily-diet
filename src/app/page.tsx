@@ -19,6 +19,8 @@ export default function Dashboard() {
     isFetchingWeekProgress,
   } = useDashboardController();
 
+  const totalMeals = mealsData?.meals.length ?? 0;
+
   return (
     <div className="flex flex-col gap-4">
       <div className="flex items-center gap-2">
@@ -29,6 +31,7 @@ export default function Dashboard() {
         dailyProteinConsumed={dailyProteinConsumed}
         dailyGoalProtein={dailyGoalProtein}
         dailyGoalPercentage={Number(dailyGoalPercentage)}
+        totalMeals={totalMeals}
       />
       <TodayMeals meals={mealsData?.meals} isLoading={isFetchingMeals} />
       <WeekProgress
