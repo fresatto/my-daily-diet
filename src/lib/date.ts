@@ -1,9 +1,19 @@
 import { toZonedTime } from "date-fns-tz";
 
 export function parseDateToLocalUTC(date: string) {
-  const timeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
+  try {
+    const isISODate = date.includes("T");
 
-  const dateInUtc = date.replace(" ", "T") + "Z";
+    if (isISODate) {
+      return new Date(date);
+    }
 
-  return toZonedTime(dateInUtc, timeZone);
+    const timeZone = new Intl.DateTimeFormat().resolvedOptions().timeZone;
+
+    const dateInUtc = date.replace(" ", "T") + "Z";
+
+    return toZonedTime(dateInUtc, timeZone);
+  } catch (error) {
+    throw new Error("Erro ao converter data para UTC" + error);
+  }
 }

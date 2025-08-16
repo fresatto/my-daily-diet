@@ -54,23 +54,29 @@ export const useMealsQuery = (filters?: MealsQueryFilters) => {
       return response.data;
     },
     select: (data) => {
-      const meals = data.meals.map((meal) => {
-        const localDate = parseDateToLocalUTC(meal.created_at);
-        const amountSuffix = getMealAmountSuffix(meal);
-        const formattedAmount = `${meal.amount}${amountSuffix}`;
-        const formattedTime = format(localDate, "'às' HH:mm");
+      try {
+        const meals = data.meals.map((meal) => {
+          const localDate = parseDateToLocalUTC(meal.created_at);
+          const amountSuffix = getMealAmountSuffix(meal);
+          const formattedAmount = `${meal.amount}${amountSuffix}`;
+          const formattedTime = format(localDate, "'às' HH:mm");
+
+          return {
+            ...meal,
+            formattedAmount,
+            formattedTime,
+            created_at: format(localDate, "dd/MM/yyyy HH:mm"),
+          };
+        });
 
         return {
-          ...meal,
-          formattedAmount,
-          formattedTime,
-          created_at: format(localDate, "dd/MM/yyyy HH:mm"),
+          meals,
         };
-      });
-
-      return {
-        meals,
-      };
+      } catch {
+        return {
+          meals: data.meals,
+        };
+      }
     },
     staleTime: 1000 * 60 * 5, // 5 minutes,
   });
