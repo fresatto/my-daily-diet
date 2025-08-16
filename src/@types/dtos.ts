@@ -19,7 +19,6 @@ export type DailyGoal = {
   carbohydrate?: number;
   fat?: number;
   calories?: number;
-  created_at: string;
 };
 
 export type DailyGoalSummary = {
