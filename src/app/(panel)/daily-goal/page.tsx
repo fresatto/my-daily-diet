@@ -1,5 +1,7 @@
 "use client";
 
+import { Suspense } from "react";
+import { useForm } from "react-hook-form";
 import { Card } from "@/components/Card";
 import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
@@ -11,7 +13,7 @@ import {
   FormLabel,
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
-import { useForm } from "react-hook-form";
+import { DailyGoals } from "./components/DailyGoals";
 
 export default function DailyGoal() {
   const form = useForm();
@@ -22,24 +24,9 @@ export default function DailyGoal() {
       <div className="flex flex-col gap-4">
         <Card.Container>
           <h3 className="font-bold">Metas atuais</h3>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
-            <div className="flex flex-col bg-gray-100 items-center justify-center p-4 rounded-lg">
-              <strong className="text-xl font-bold">200g</strong>
-              <small className="text-xs">Proteína</small>
-            </div>
-            <div className="flex flex-col bg-gray-100 items-center justify-center p-4 rounded-lg">
-              <strong className="text-xl font-bold">150g</strong>
-              <small className="text-xs">Carboidratos</small>
-            </div>
-            <div className="flex flex-col bg-gray-100 items-center justify-center p-4 rounded-lg">
-              <strong className="text-xl font-bold">70g</strong>
-              <small className="text-xs">Gordura</small>
-            </div>
-            <div className="flex flex-col bg-gray-100 items-center justify-center p-4 rounded-lg">
-              <strong className="text-xl font-bold">2000</strong>
-              <small className="text-xs">Calorias</small>
-            </div>
-          </div>
+          <Suspense fallback={<DailyGoals.Loading />}>
+            <DailyGoals.List />
+          </Suspense>
         </Card.Container>
         <Card.Container>
           <div>
