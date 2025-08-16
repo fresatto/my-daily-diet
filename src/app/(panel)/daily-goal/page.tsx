@@ -17,13 +17,30 @@ import { DailyGoals } from "./components/DailyGoals";
 import { DailyGoalSchema, dailyGoalSchema } from "./schema";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useDailyGoalMutation } from "@/services/queries/daily-goal";
+import { toast } from "sonner";
 
 export default function DailyGoal() {
   const form = useForm({
+    defaultValues: {
+      protein: "",
+      carbohydrate: "",
+      fat: "",
+      calories: "",
+    },
     resolver: zodResolver(dailyGoalSchema),
   });
 
-  const { mutate: updateDailyGoal, isPending } = useDailyGoalMutation();
+  const { mutate: updateDailyGoal, isPending } = useDailyGoalMutation({
+    onSuccess: () => {
+      form.reset({
+        protein: "",
+        carbohydrate: "",
+        fat: "",
+        calories: "",
+      });
+      toast.success("Metas atualizadas com sucesso");
+    },
+  });
 
   const onSubmit = (data: DailyGoalSchema) => {
     updateDailyGoal(data);

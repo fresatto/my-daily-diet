@@ -1,5 +1,6 @@
 import {
   useMutation,
+  UseMutationOptions,
   useQuery,
   useQueryClient,
   useSuspenseQuery,
@@ -58,20 +59,29 @@ export function useDailyGoalSummaryQuery() {
   });
 }
 
-export function useDailyGoalMutation() {
+export function useDailyGoalMutation(
+  props?: Omit<
+    UseMutationOptions<unknown, unknown, DailyGoalRequest, unknown>,
+    "mutationFn"
+  >
+) {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationKey: dailyGoalQueryKeys.update(),
     mutationFn: async (data: DailyGoalRequest) => {
-      const response = await api.post("/daily-goal", data);
+      const response = await api.post<DailyGoalResponse>("/daily-goal", data);
 
       return response.data;
     },
-    onSuccess: (_, dailyGoal) => {
+    onSuccess: (data, variables, context) => {
       queryClient.setQueryData(dailyGoalQueryKeys.getSuspense(), {
-        dailyGoal,
+        dailyGoal: variables,
       });
+
+      if (props?.onSuccess) {
+        props.onSuccess(data, variables, context);
+      }
     },
   });
 }
