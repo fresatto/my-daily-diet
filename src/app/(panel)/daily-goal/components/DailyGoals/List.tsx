@@ -8,6 +8,10 @@ import { DailyGoalsContainer } from "./Container";
 export const DailyGoalsList: React.FC = () => {
   const { data } = useDailyGoalSuspenseQuery();
 
+  if (!data.dailyGoal) {
+    return null;
+  }
+
   const { protein, carbohydrate, fat, calories } = data.dailyGoal;
 
   const formattedProtein = protein ? `${protein}g` : "0";
