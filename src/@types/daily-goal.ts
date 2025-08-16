@@ -16,6 +16,4 @@ export type DailyGoalResponse = {
   dailyGoal: DailyGoal;
 };
 
-export type DailyGoalRequest = {
-  protein: number;
-};
+export type DailyGoalRequest = DailyGoal;

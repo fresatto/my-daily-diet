@@ -1,4 +1,9 @@
-import { useMutation, useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  useQuery,
+  useQueryClient,
+  useSuspenseQuery,
+} from "@tanstack/react-query";
 
 import { api } from "@/services/api";
 import {
@@ -54,12 +59,19 @@ export function useDailyGoalSummaryQuery() {
 }
 
 export function useDailyGoalMutation() {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationKey: dailyGoalQueryKeys.update(),
     mutationFn: async (data: DailyGoalRequest) => {
       const response = await api.post("/daily-goal", data);
 
       return response.data;
+    },
+    onSuccess: (_, dailyGoal) => {
+      queryClient.setQueryData(dailyGoalQueryKeys.getSuspense(), {
+        dailyGoal,
+      });
     },
   });
 }

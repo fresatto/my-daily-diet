@@ -14,9 +14,20 @@ import {
 } from "@/components/ui/form";
 import { Input } from "@/components/ui/input";
 import { DailyGoals } from "./components/DailyGoals";
+import { DailyGoalSchema, dailyGoalSchema } from "./schema";
+import { zodResolver } from "@hookform/resolvers/zod";
+import { useDailyGoalMutation } from "@/services/queries/daily-goal";
 
 export default function DailyGoal() {
-  const form = useForm();
+  const form = useForm({
+    resolver: zodResolver(dailyGoalSchema),
+  });
+
+  const { mutate: updateDailyGoal, isPending } = useDailyGoalMutation();
+
+  const onSubmit = (data: DailyGoalSchema) => {
+    updateDailyGoal(data);
+  };
 
   return (
     <>
@@ -36,7 +47,10 @@ export default function DailyGoal() {
             </p>
           </div>
           <Form {...form}>
-            <form className="flex flex-col gap-4">
+            <form
+              onSubmit={form.handleSubmit(onSubmit)}
+              className="flex flex-col gap-4"
+            >
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <FormField
                   control={form.control}
@@ -103,7 +117,9 @@ export default function DailyGoal() {
                   )}
                 />
               </div>
-              <Button type="submit">Salvar</Button>
+              <Button loading={isPending} type="submit">
+                Salvar
+              </Button>
             </form>
           </Form>
         </Card.Container>
