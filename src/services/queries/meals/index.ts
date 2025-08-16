@@ -73,9 +73,7 @@ export const useMealsQuery = (filters?: MealsQueryFilters) => {
           meals,
         };
       } catch {
-        return {
-          meals: data.meals,
-        };
+        throw new Error("Erro ao formatar as refeições.");
       }
     },
     staleTime: 1000 * 60 * 5, // 5 minutes,
