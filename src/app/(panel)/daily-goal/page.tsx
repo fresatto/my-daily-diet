@@ -1,48 +1,126 @@
 "use client";
 
-import { DailyGoalResponse, DailyGoalSummaryResponse } from "@/@types/dtos";
+import { Card } from "@/components/Card";
+import { PageHeader } from "@/components/PageHeader";
 import { Button } from "@/components/ui/button";
-import { api } from "@/services/api";
-import { useQuery } from "@tanstack/react-query";
-import Link from "next/link";
+import {
+  Form,
+  FormControl,
+  FormField,
+  FormItem,
+  FormLabel,
+} from "@/components/ui/form";
+import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form";
 
 export default function DailyGoal() {
-  const { data } = useQuery({
-    queryKey: ["daily-goal"],
-    queryFn: async () => {
-      const response = await api.get<DailyGoalResponse>("/daily-goal");
-
-      return response.data;
-    },
-  });
-
-  const { data: summary } = useQuery({
-    queryKey: ["daily-goal-summary"],
-    queryFn: async () => {
-      const response = await api.get<DailyGoalSummaryResponse>(
-        "/daily-goal/summary"
-      );
-
-      return response.data;
-    },
-  });
-
-  const proteinConsumed = summary?.proteinConsumed || 0;
-  const proteinGoal = data?.dailyGoal?.protein || 0;
-  const proteinDifference = Number(proteinGoal - proteinConsumed).toFixed(1);
+  const form = useForm();
 
   return (
-    <div className="flex flex-col gap-4">
-      <h3 className="text-center text-2xl font-bold">
-        {proteinConsumed}g / {proteinGoal}g
-      </h3>
-      <p className="text-center text-sm">
-        Você consumiu <strong>{summary?.proteinConsumed}g</strong> de proteínas
-        hoje, você está à <strong>{proteinDifference}g</strong> do seu objetivo.
-      </p>
-      <Button className="self-center" asChild>
-        <Link href="/">Alterar objetivo</Link>
-      </Button>
-    </div>
+    <>
+      <PageHeader title="Objetivos diários" />
+      <div className="flex flex-col gap-4">
+        <Card.Container>
+          <h3 className="font-bold">Metas atuais</h3>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="flex flex-col bg-gray-100 items-center justify-center p-4 rounded-lg">
+              <strong className="text-xl font-bold">200g</strong>
+              <small className="text-xs">Proteína</small>
+            </div>
+            <div className="flex flex-col bg-gray-100 items-center justify-center p-4 rounded-lg">
+              <strong className="text-xl font-bold">150g</strong>
+              <small className="text-xs">Carboidratos</small>
+            </div>
+            <div className="flex flex-col bg-gray-100 items-center justify-center p-4 rounded-lg">
+              <strong className="text-xl font-bold">70g</strong>
+              <small className="text-xs">Gordura</small>
+            </div>
+            <div className="flex flex-col bg-gray-100 items-center justify-center p-4 rounded-lg">
+              <strong className="text-xl font-bold">2000</strong>
+              <small className="text-xs">Calorias</small>
+            </div>
+          </div>
+        </Card.Container>
+        <Card.Container>
+          <div>
+            <h3 className="font-bold">Alterar metas</h3>
+            <p className="text-xs">
+              Estabeleça suas metas diárias de macronutrientes
+            </p>
+          </div>
+          <Form {...form}>
+            <form className="flex flex-col gap-4">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <FormField
+                  control={form.control}
+                  name="protein"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Proteínas (g)</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Quantidade de proteínas"
+                          type="number"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="carbohydrate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Carboidratos (g)</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Quantidade de carboidrato"
+                          type="number"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="carbohydrate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Gorduras (g)</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Quantidade de gorduras"
+                          type="number"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <FormField
+                  control={form.control}
+                  name="carbohydrate"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormLabel>Calorias (kcal)</FormLabel>
+                      <FormControl>
+                        <Input
+                          {...field}
+                          placeholder="Quantidade de calorias"
+                          type="number"
+                        />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+              </div>
+              <Button type="submit">Salvar</Button>
+            </form>
+          </Form>
+        </Card.Container>
+      </div>
+    </>
   );
 }
