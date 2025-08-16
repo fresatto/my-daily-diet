@@ -1,8 +1,10 @@
-import { DailyGoalResponse, DailyGoalSummaryResponse } from "@/@types/dtos";
+import {
+  DailyGoalResponse,
+  DailyGoalSummaryResponse,
+} from "@/@types/daily-goal";
 
 export const dailyGoalMock: DailyGoalResponse = {
   dailyGoal: {
-    created_at: "2025-07-31 02:24:10",
     protein: 300,
   },
 };
