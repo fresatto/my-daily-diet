@@ -1,6 +1,7 @@
-import { Period } from "@/@types/dtos";
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+
+import { Period } from "@/@types/dtos";
 import { useMealsQuery } from "@/services/queries/meals";
 import { useWeekProgressQuery } from "@/services/queries/week-progress";
 import {

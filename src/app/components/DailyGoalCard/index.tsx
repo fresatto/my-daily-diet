@@ -2,21 +2,34 @@ import React from "react";
 import { Utensils } from "lucide-react";
 
 import { Progress } from "@/components/ui/progress";
+import {
+  useDailyGoalSummarySuspenseQuery,
+  useDailyGoalSuspenseQuery,
+} from "@/services/queries/daily-goal";
 
 type DailyGoalCardProps = {
-  dailyProteinConsumed: number;
-  dailyGoalProtein: number;
   dailyGoalPercentage: number;
   totalMeals: number;
 };
 
-export const DailyGoalCard: React.FC<DailyGoalCardProps> = ({
-  dailyProteinConsumed,
-  dailyGoalProtein,
-  dailyGoalPercentage,
-  totalMeals,
-}) => {
-  const percentage = dailyGoalPercentage >= 100 ? 100 : dailyGoalPercentage;
+export const DailyGoalCard: React.FC<DailyGoalCardProps> = ({ totalMeals }) => {
+  const { data: dailyGoalData } = useDailyGoalSuspenseQuery();
+  const { data: dailyGoalSummaryData } = useDailyGoalSummarySuspenseQuery();
+
+  if (!dailyGoalData || !dailyGoalSummaryData) {
+    return null;
+  }
+
+  const dailyGoalProtein = dailyGoalData?.dailyGoal?.protein ?? 0;
+
+  const dailyProteinConsumed = dailyGoalSummaryData?.proteinConsumed ?? 0;
+
+  const dailyGoalPercentage = (dailyProteinConsumed / dailyGoalProtein) * 100;
+
+  const percentage = Number(
+    dailyGoalPercentage >= 100 ? 100 : dailyGoalPercentage
+  ).toFixed(1);
+
   const totalToAchieveGoal = Number(
     dailyGoalProtein - dailyProteinConsumed
   ).toFixed(1);

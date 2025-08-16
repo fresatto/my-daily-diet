@@ -1,19 +1,19 @@
 "use client";
 
+import { Suspense } from "react";
 import { Calendar } from "lucide-react";
 
 import { useDashboardController } from "./useDashboardController";
 import { DailyGoalCard } from "./components/DailyGoalCard";
 import { TodayMeals } from "./components/TodayMeals";
 import { WeekProgress } from "./components/WeekProgress";
+import { DashboardLoadingFallback } from "./components/DashboardLoadingFallback";
 
 export default function Dashboard() {
   const {
     mealsData,
     todayFormattedDate,
-    dailyGoalProtein,
     dailyGoalPercentage,
-    dailyProteinConsumed,
     isFetchingMeals,
     weekProgressData,
     isFetchingWeekProgress,
@@ -27,17 +27,18 @@ export default function Dashboard() {
         <Calendar size={16} />
         <h1 className="text-sm">{todayFormattedDate}</h1>
       </div>
-      <DailyGoalCard
-        dailyProteinConsumed={dailyProteinConsumed}
-        dailyGoalProtein={dailyGoalProtein}
-        dailyGoalPercentage={Number(dailyGoalPercentage)}
-        totalMeals={totalMeals}
-      />
-      <TodayMeals meals={mealsData?.meals} isLoading={isFetchingMeals} />
-      <WeekProgress
-        weekProgress={weekProgressData?.weekProgress}
-        isLoading={isFetchingWeekProgress}
-      />
+
+      <Suspense fallback={<DashboardLoadingFallback />}>
+        <DailyGoalCard
+          dailyGoalPercentage={Number(dailyGoalPercentage)}
+          totalMeals={totalMeals}
+        />
+        <TodayMeals meals={mealsData?.meals} isLoading={isFetchingMeals} />
+        <WeekProgress
+          weekProgress={weekProgressData?.weekProgress}
+          isLoading={isFetchingWeekProgress}
+        />
+      </Suspense>
     </div>
   );
 }

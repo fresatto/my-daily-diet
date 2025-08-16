@@ -18,6 +18,7 @@ export const dailyGoalQueryKeys = {
   get: () => [...dailyGoalQueryKeys.all(), "get"],
   getSuspense: () => [...dailyGoalQueryKeys.all(), "getSuspense"],
   getSummary: () => [...dailyGoalQueryKeys.all(), "getSummary"],
+  getSummarySuspense: () => [...dailyGoalQueryKeys.all(), "getSummarySuspense"],
   update: () => [...dailyGoalQueryKeys.all(), "update"],
 };
 
@@ -38,6 +39,20 @@ export function useDailyGoalSuspenseQuery() {
     queryKey: dailyGoalQueryKeys.getSuspense(),
     queryFn: async () => {
       const response = await api.get<DailyGoalResponse>("/daily-goal");
+
+      return response.data;
+    },
+    staleTime: 1000 * 60 * 60 * 5, // 5 minutes
+  });
+}
+
+export function useDailyGoalSummarySuspenseQuery() {
+  return useSuspenseQuery({
+    queryKey: dailyGoalQueryKeys.getSummarySuspense(),
+    queryFn: async () => {
+      const response = await api.get<DailyGoalSummaryResponse>(
+        "/daily-goal/summary"
+      );
 
       return response.data;
     },
