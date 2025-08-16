@@ -1,7 +1,7 @@
 import { afterEach, describe, expect, it } from "vitest";
 import { cleanup, screen } from "@testing-library/react";
 
-import { mealsMock } from "@/__tests__/__mocks__/meal";
+import { mealsMock } from "@/__tests__/__mocks__/meals";
 import { render } from "@/__tests__/customRender";
 import { TodayMeals } from "../index";
 
@@ -11,7 +11,7 @@ describe("HOME | components/TodayMeals", () => {
   });
 
   it("should render empty state correctly", () => {
-    render(<TodayMeals />);
+    render(<TodayMeals isLoading={false} meals={[]} />);
 
     expect(
       screen.getByText(
@@ -26,7 +26,7 @@ describe("HOME | components/TodayMeals", () => {
       formattedTime: "às 10:00",
     }));
 
-    render(<TodayMeals meals={formattedMeals} />);
+    render(<TodayMeals isLoading={false} meals={formattedMeals} />);
 
     expect(screen.getByText("Refeições de hoje")).toBeTruthy();
     expect(screen.getByText("Arroz")).toBeTruthy();
