@@ -10,16 +10,8 @@ import { WeekProgress } from "./components/WeekProgress";
 import { DashboardLoadingFallback } from "./components/DashboardLoadingFallback";
 
 export default function Dashboard() {
-  const {
-    mealsData,
-    todayFormattedDate,
-    dailyGoalPercentage,
-    isFetchingMeals,
-    weekProgressData,
-    isFetchingWeekProgress,
-  } = useDashboardController();
-
-  const totalMeals = mealsData?.meals.length ?? 0;
+  const { todayFormattedDate, weekProgressData, isFetchingWeekProgress } =
+    useDashboardController();
 
   return (
     <div className="flex flex-col gap-4">
@@ -29,11 +21,8 @@ export default function Dashboard() {
       </div>
 
       <Suspense fallback={<DashboardLoadingFallback />}>
-        <DailyGoalCard
-          dailyGoalPercentage={Number(dailyGoalPercentage)}
-          totalMeals={totalMeals}
-        />
-        <TodayMeals meals={mealsData?.meals} isLoading={isFetchingMeals} />
+        <DailyGoalCard />
+        <TodayMeals />
         <WeekProgress
           weekProgress={weekProgressData?.weekProgress}
           isLoading={isFetchingWeekProgress}

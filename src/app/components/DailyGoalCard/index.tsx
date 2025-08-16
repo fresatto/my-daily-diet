@@ -6,17 +6,14 @@ import {
   useDailyGoalSummarySuspenseQuery,
   useDailyGoalSuspenseQuery,
 } from "@/services/queries/daily-goal";
+import { useMealsSuspenseQuery } from "@/services/queries/meals";
 
-type DailyGoalCardProps = {
-  dailyGoalPercentage: number;
-  totalMeals: number;
-};
-
-export const DailyGoalCard: React.FC<DailyGoalCardProps> = ({ totalMeals }) => {
+export const DailyGoalCard: React.FC = () => {
+  const { data: mealsData } = useMealsSuspenseQuery();
   const { data: dailyGoalData } = useDailyGoalSuspenseQuery();
   const { data: dailyGoalSummaryData } = useDailyGoalSummarySuspenseQuery();
 
-  if (!dailyGoalData || !dailyGoalSummaryData) {
+  if (!dailyGoalData || !dailyGoalSummaryData || !mealsData) {
     return null;
   }
 
@@ -33,6 +30,8 @@ export const DailyGoalCard: React.FC<DailyGoalCardProps> = ({ totalMeals }) => {
   const totalToAchieveGoal = Number(
     dailyGoalProtein - dailyProteinConsumed
   ).toFixed(1);
+
+  const totalMeals = mealsData?.meals.length ?? 0;
 
   return (
     <div className="flex flex-col gap-4 p-6 bg-white rounded-lg border border-gray-200">
