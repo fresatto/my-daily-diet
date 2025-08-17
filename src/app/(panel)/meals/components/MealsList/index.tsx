@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useState } from "react";
 import { Calendar, TrashIcon } from "lucide-react";
 
 import { CardListItem } from "@/components/CardListItem";
@@ -12,10 +12,36 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import { useMealsSuspenseQuery } from "@/services/queries/meals";
+import {
+  useDeleteMealMutation,
+  useMealsSuspenseQuery,
+} from "@/services/queries/meals";
+import { toast } from "sonner";
 
 export const MealsList: React.FC = () => {
+  const [open, setOpen] = useState(false);
+  const [selectedMealId, setSelectedMealId] = useState<string>();
+
   const { data } = useMealsSuspenseQuery();
+  const { mutate: deleteMeal, isPending } = useDeleteMealMutation({
+    onSuccess: () => {
+      toast.success("Refeição deletada com sucesso!");
+      setSelectedMealId(undefined);
+    },
+  });
+
+  const handleOpenConfirmMealDeletionModal = (
+    isOpen: boolean,
+    mealId: string
+  ) => {
+    setSelectedMealId(mealId);
+    setOpen(isOpen);
+  };
+
+  const handleDeleteMeal = (mealId: string) => {
+    deleteMeal(mealId);
+    setOpen(false);
+  };
 
   if (!data) {
     return null;
@@ -55,13 +81,17 @@ export const MealsList: React.FC = () => {
           </CardListItem.Content>
           <aside>
             <Dialog
-            // open={selectedMealId === meal.id && isDeleteMealDialogOpen}
-            // onOpenChange={(open) =>
-            //   handleDeleteMealDialogOpenChange(open, meal.id)
-            // }
+              open={selectedMealId === meal.id && open}
+              onOpenChange={(isOpen) =>
+                handleOpenConfirmMealDeletionModal(isOpen, meal.id)
+              }
             >
               <DialogTrigger className="w-4 h-4" asChild>
-                <Button variant="ghost" size="icon">
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  loading={selectedMealId === meal.id && isPending}
+                >
                   <TrashIcon className="w-1 h-1" color="red" />
                 </Button>
               </DialogTrigger>
@@ -76,9 +106,7 @@ export const MealsList: React.FC = () => {
                   <Button variant="outline">Cancelar</Button>
                   <Button
                     variant="destructive"
-                    onClick={() => {
-                      // deleteMeal(meal.id)
-                    }}
+                    onClick={() => handleDeleteMeal(meal.id)}
                   >
                     Deletar
                   </Button>

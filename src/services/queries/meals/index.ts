@@ -1,7 +1,6 @@
 import {
   useMutation,
   UseMutationOptions,
-  useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
@@ -21,11 +20,6 @@ type MealsQueryFilters = {
 
 export const mealsQueryKeys = {
   all: () => ["meals"],
-  list: (filters?: MealsQueryFilters) => [
-    ...mealsQueryKeys.all(),
-    "list",
-    filters,
-  ],
   listSuspense: (filters?: MealsQueryFilters) => [
     ...mealsQueryKeys.all(),
     "listSuspense",
@@ -39,51 +33,6 @@ const getMealAmountSuffix = (meal: Meal) => {
   }
 
   return meal.amount > 0 ? "unidades" : "unidades";
-};
-
-export const useMealsQuery = (filters?: MealsQueryFilters) => {
-  return useQuery({
-    queryKey: mealsQueryKeys.list(filters),
-    queryFn: async () => {
-      const response = await api.get<MealsResponse>("/meals", {
-        params: filters,
-      });
-
-      if (response.status !== 200) {
-        toast.error("Erro ao buscar refeições");
-
-        return {
-          meals: [],
-        };
-      }
-
-      return response.data;
-    },
-    select: (data) => {
-      try {
-        const meals = data.meals.map((meal) => {
-          const localDate = parseDateToLocalUTC(meal.created_at);
-          const amountSuffix = getMealAmountSuffix(meal);
-          const formattedAmount = `${meal.amount}${amountSuffix}`;
-          const formattedTime = format(localDate, "'às' HH:mm");
-
-          return {
-            ...meal,
-            formattedAmount,
-            formattedTime,
-            created_at: format(localDate, "dd/MM/yyyy HH:mm"),
-          };
-        });
-
-        return {
-          meals,
-        };
-      } catch {
-        throw new Error("Erro ao formatar as refeições.");
-      }
-    },
-    staleTime: 1000 * 60 * 5, // 5 minutes,
-  });
 };
 
 export const useMealsSuspenseQuery = (filters?: MealsQueryFilters) => {
@@ -195,10 +144,7 @@ export const useDeleteMealMutation = ({
       return id;
     },
     onSuccess: (deletedMealId, data, context) => {
-      const listMealsQueryKey = mealsQueryKeys.list({
-        // TODO: get the period from the query params
-        period: Period.TODAY,
-      });
+      const listMealsQueryKey = mealsQueryKeys.listSuspense();
 
       const oldData =
         queryClient.getQueryData<MealsResponse>(listMealsQueryKey);
