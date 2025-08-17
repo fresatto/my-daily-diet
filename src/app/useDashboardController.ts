@@ -1,12 +1,7 @@
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
 
-import { useWeekProgressQuery } from "@/services/queries/week-progress";
-
 export function useDashboardController() {
-  const { data: weekProgressData, isFetching: isFetchingWeekProgress } =
-    useWeekProgressQuery();
-
   const getTodayFormattedDate = () => {
     const formattedDate = format(new Date(), "EEEE, d 'de' MMMM 'de' yyyy", {
       locale: ptBR,
@@ -22,7 +17,5 @@ export function useDashboardController() {
 
   return {
     todayFormattedDate,
-    weekProgressData,
-    isFetchingWeekProgress,
   };
 }

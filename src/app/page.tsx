@@ -10,8 +10,7 @@ import { WeekProgress } from "./components/WeekProgress";
 import { DashboardLoadingFallback } from "./components/DashboardLoadingFallback";
 
 export default function Dashboard() {
-  const { todayFormattedDate, weekProgressData, isFetchingWeekProgress } =
-    useDashboardController();
+  const { todayFormattedDate } = useDashboardController();
 
   return (
     <div className="flex flex-col gap-4">
@@ -23,10 +22,7 @@ export default function Dashboard() {
       <Suspense fallback={<DashboardLoadingFallback />}>
         <DailyGoalCard />
         <TodayMeals />
-        <WeekProgress
-          weekProgress={weekProgressData?.weekProgress}
-          isLoading={isFetchingWeekProgress}
-        />
+        <WeekProgress />
       </Suspense>
     </div>
   );
