@@ -153,11 +153,7 @@ export const useCreateMealMutation = ({
     },
     onSuccess: (variables, data, context) => {
       queryClient.invalidateQueries({
-        queryKey: [
-          ...mealsQueryKeys.list({
-            period: Period.TODAY,
-          }),
-        ],
+        queryKey: mealsQueryKeys.listSuspense(),
       });
 
       queryClient.invalidateQueries({
