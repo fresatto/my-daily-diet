@@ -36,10 +36,10 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="pt-BR">
-      <Providers>
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} antialiased`}
-        >
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} antialiased`}
+      >
+        <Providers>
           <div className="flex flex-col h-screen">
             <header className="border-b border-b-gray-300 grow-0">
               <div className="mx-auto max-w-7xl w-full px-4 flex items-center justify-between">
@@ -72,8 +72,8 @@ export default function RootLayout({
             </div>
           </div>
           <Toaster position="top-right" richColors />
-        </body>
-      </Providers>
+        </Providers>
+      </body>
     </html>
   );
 }
