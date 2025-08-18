@@ -5,8 +5,8 @@ import { Calendar } from "lucide-react";
 
 import { useDashboardController } from "./useDashboardController";
 import { DailyGoalCard } from "./components/DailyGoalCard";
-import { TodayMeals } from "./components/TodayMeals";
-import { WeekProgress } from "./components/WeekProgress";
+// import { TodayMeals } from "./components/TodayMeals";
+// import { WeekProgress } from "./components/WeekProgress";
 import { DashboardLoadingFallback } from "./components/DashboardLoadingFallback";
 
 export default function Dashboard() {
@@ -21,8 +21,8 @@ export default function Dashboard() {
 
       <Suspense fallback={<DashboardLoadingFallback />}>
         <DailyGoalCard />
-        <TodayMeals />
-        <WeekProgress />
+        {/* <TodayMeals />
+        <WeekProgress /> */}
       </Suspense>
     </div>
   );
