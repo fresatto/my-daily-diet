@@ -8,14 +8,14 @@ import { format } from "date-fns";
 import { toast } from "sonner";
 
 import { api } from "@/services/api";
-import { Meal, MealsResponse, Period } from "@/@types/dtos";
+import { Meal, MealsResponse } from "@/@types/dtos";
 import { CreateMealSchema } from "@/components/NewMealDialog/schema";
 import { parseDateToLocalUTC } from "@/lib/date";
 import { weekProgressQueryKeys } from "../week-progress";
 import { dailyGoalQueryKeys } from "../daily-goal";
 
 type MealsQueryFilters = {
-  period?: Period;
+  startDate: string;
 };
 
 export const mealsQueryKeys = {
@@ -35,12 +35,24 @@ const getMealAmountSuffix = (meal: Meal) => {
   return meal.amount > 0 ? "unidades" : "unidades";
 };
 
+const getMealsStartDate = (filters?: MealsQueryFilters) => {
+  if (filters?.startDate) {
+    return filters.startDate;
+  }
+
+  return format(new Date(), "yyyy-MM-dd");
+};
+
 export const useMealsSuspenseQuery = (filters?: MealsQueryFilters) => {
+  const startDate = getMealsStartDate(filters);
+
   return useSuspenseQuery({
-    queryKey: mealsQueryKeys.listSuspense(filters),
+    queryKey: mealsQueryKeys.listSuspense({ startDate }),
     queryFn: async () => {
       const response = await api.get<MealsResponse>("/meals", {
-        params: filters,
+        params: {
+          startDate,
+        },
       });
 
       if (response.status !== 200) {
@@ -101,8 +113,10 @@ export const useCreateMealMutation = ({
       return response.data;
     },
     onSuccess: (variables, data, context) => {
+      const startDate = getMealsStartDate();
+
       queryClient.invalidateQueries({
-        queryKey: mealsQueryKeys.listSuspense(),
+        queryKey: mealsQueryKeys.listSuspense({ startDate }),
       });
 
       queryClient.invalidateQueries({
@@ -144,7 +158,9 @@ export const useDeleteMealMutation = ({
       return id;
     },
     onSuccess: (deletedMealId, data, context) => {
-      const listMealsQueryKey = mealsQueryKeys.listSuspense();
+      const startDate = getMealsStartDate();
+
+      const listMealsQueryKey = mealsQueryKeys.listSuspense({ startDate });
 
       const oldData =
         queryClient.getQueryData<MealsResponse>(listMealsQueryKey);
