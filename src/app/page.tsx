@@ -7,7 +7,7 @@ import { useDashboardController } from "./useDashboardController";
 import { DailyGoalCard } from "./components/DailyGoalCard";
 import { TodayMeals } from "./components/TodayMeals";
 import { WeekProgress } from "./components/WeekProgress";
-import { DashboardLoadingFallback } from "./components/DashboardLoadingFallback";
+import HomeLoading from "./loading";
 
 export default function Dashboard() {
   const { todayFormattedDate } = useDashboardController();
@@ -19,7 +19,7 @@ export default function Dashboard() {
         <h1 className="text-sm">{todayFormattedDate}</h1>
       </div>
 
-      <Suspense fallback={<DashboardLoadingFallback />}>
+      <Suspense fallback={<HomeLoading />}>
         <DailyGoalCard />
         <TodayMeals />
         <WeekProgress />
