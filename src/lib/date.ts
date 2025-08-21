@@ -1,5 +1,9 @@
 import { toZonedTime } from "date-fns-tz";
 
+export function getTimeZone() {
+  return new Intl.DateTimeFormat().resolvedOptions().timeZone;
+}
+
 export function parseDateToLocalUTC(date: string) {
   try {
     const isISODate = date.includes("T");

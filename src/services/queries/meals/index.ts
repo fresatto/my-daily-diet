@@ -10,7 +10,7 @@ import { toast } from "sonner";
 import { api } from "@/services/api";
 import { Meal, MealsResponse } from "@/@types/dtos";
 import { CreateMealSchema } from "@/components/NewMealDialog/schema";
-import { parseDateToLocalUTC } from "@/lib/date";
+import { getTimeZone, parseDateToLocalUTC } from "@/lib/date";
 import { weekProgressQueryKeys } from "../week-progress";
 import { dailyGoalQueryKeys } from "../daily-goal";
 
@@ -45,6 +45,7 @@ const getMealsStartDate = (filters?: MealsQueryFilters) => {
 
 export const useMealsSuspenseQuery = (filters?: MealsQueryFilters) => {
   const startDate = getMealsStartDate(filters);
+  const timezone = getTimeZone();
 
   return useSuspenseQuery({
     queryKey: mealsQueryKeys.listSuspense({ startDate }),
@@ -52,6 +53,7 @@ export const useMealsSuspenseQuery = (filters?: MealsQueryFilters) => {
       const response = await api.get<MealsResponse>("/meals", {
         params: {
           startDate,
+          timezone,
         },
       });
 
