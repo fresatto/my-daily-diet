@@ -1,7 +1,8 @@
 import { toZonedTime } from "date-fns-tz";
 
 export function getTimeZone() {
-  return new Intl.DateTimeFormat().resolvedOptions().timeZone;
+  return "America/Sao_Paulo";
+  // return new Intl.DateTimeFormat().resolvedOptions().timeZone;
 }
 
 export function parseDateToLocalUTC(date: string) {
