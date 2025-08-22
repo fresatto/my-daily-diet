@@ -1,7 +1,10 @@
+"use client";
+
 import { format } from "date-fns";
 import { ptBR } from "date-fns/locale";
+import { Calendar } from "lucide-react";
 
-export function useDashboardController() {
+export function DashboardHeader() {
   const getTodayFormattedDate = () => {
     const formattedDate = format(new Date(), "EEEE, d 'de' MMMM 'de' yyyy", {
       locale: ptBR,
@@ -15,7 +18,10 @@ export function useDashboardController() {
 
   const todayFormattedDate = getTodayFormattedDate();
 
-  return {
-    todayFormattedDate,
-  };
+  return (
+    <div className="flex items-center gap-2">
+      <Calendar size={16} />
+      <h1 className="text-sm">{todayFormattedDate}</h1>
+    </div>
+  );
 }

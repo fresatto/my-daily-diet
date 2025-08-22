@@ -1,6 +1,7 @@
 import {
   useMutation,
   UseMutationOptions,
+  useQuery,
   useQueryClient,
   useSuspenseQuery,
 } from "@tanstack/react-query";
@@ -41,6 +42,57 @@ const getMealsStartDate = (filters?: MealsQueryFilters) => {
   }
 
   return format(new Date(), "yyyy-MM-dd");
+};
+
+export const useMealsQuery = (filters?: MealsQueryFilters) => {
+  const startDate = getMealsStartDate(filters);
+  const timezone = getTimeZone();
+
+  return useQuery({
+    queryKey: mealsQueryKeys.listSuspense({ startDate }),
+    queryFn: async () => {
+      const response = await api.get<MealsResponse>("/meals", {
+        params: {
+          startDate,
+          timezone,
+        },
+      });
+
+      if (response.status !== 200) {
+        toast.error("Erro ao buscar refeições");
+
+        return {
+          meals: [],
+        };
+      }
+
+      return response.data;
+    },
+    select: (data) => {
+      try {
+        const meals = data.meals.map((meal) => {
+          const localDate = parseDateToLocalUTC(meal.created_at);
+          const amountSuffix = getMealAmountSuffix(meal);
+          const formattedAmount = `${meal.amount}${amountSuffix}`;
+          const formattedTime = format(localDate, "'às' HH:mm");
+
+          return {
+            ...meal,
+            formattedAmount,
+            formattedTime,
+            created_at: format(localDate, "dd/MM/yyyy HH:mm"),
+          };
+        });
+
+        return {
+          meals,
+        };
+      } catch {
+        throw new Error("Erro ao formatar as refeições.");
+      }
+    },
+    staleTime: 1000 * 60 * 5, // 5 minutes,
+  });
 };
 
 export const useMealsSuspenseQuery = (filters?: MealsQueryFilters) => {
