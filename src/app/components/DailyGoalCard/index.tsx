@@ -32,6 +32,9 @@ export const DailyGoalCard: React.FC = () => {
     dailyGoalProtein - dailyProteinConsumed
   ).toFixed(1);
 
+  const totalToAchieveGoalFormatted =
+    Number(totalToAchieveGoal) > 0 ? `${totalToAchieveGoal}g` : 0;
+
   const totalMeals = mealsData?.meals.length ?? 0;
 
   const failedToFetchData =
@@ -64,7 +67,7 @@ export const DailyGoalCard: React.FC = () => {
             Quantidade necessária para atingir a meta
           </small>
           <strong data-testid="daily-protein-consumed">
-            {totalToAchieveGoal}g
+            {totalToAchieveGoalFormatted}
           </strong>
         </div>
         <div className="flex flex-col">

@@ -44,7 +44,12 @@ export default function RootLayout({
             <header className="border-b border-b-gray-300 grow-0">
               <div className="mx-auto max-w-7xl w-full px-4 flex items-center justify-between">
                 <h1 className="text-2xl font-bold">
-                  <Link href="/">ProteinTracker</Link>
+                  <Link href="/" className="lg:hidden">
+                    PTracker
+                  </Link>
+                  <Link href="/" className="hidden lg:block">
+                    ProteinTracker
+                  </Link>
                 </h1>
                 <NavigationMenu className="py-4 " viewport={false}>
                   <NavigationMenuList className="flex gap-3">
