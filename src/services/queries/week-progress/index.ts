@@ -1,6 +1,7 @@
 import { WeekProgressResponse } from "@/@types/week-progress";
 import { api } from "@/services/api";
-import { useQuery, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
+import { toast } from "sonner";
 
 export const weekProgressQueryKeys = {
   all: () => ["week-progress"],
@@ -12,22 +13,16 @@ export const useWeekProgressQuery = () => {
   return useQuery({
     queryKey: weekProgressQueryKeys.list(),
     queryFn: async () => {
-      const response = await api.get<WeekProgressResponse>("/week-progress");
+      try {
+        const response = await api.get<WeekProgressResponse>("/week-progress");
 
-      return response.data;
+        return response.data;
+      } catch (error) {
+        toast.error("Erro ao carregar o progresso da semana");
+        throw error;
+      }
     },
-    staleTime: 1000 * 60 * 5, // 5 minutes
-  });
-};
-
-export const useWeekProgressSuspenseQuery = () => {
-  return useSuspenseQuery({
-    queryKey: weekProgressQueryKeys.listSuspense(),
-    queryFn: async () => {
-      const response = await api.get<WeekProgressResponse>("/week-progress");
-
-      return response.data;
-    },
+    retry: false,
     staleTime: 1000 * 60 * 5, // 5 minutes
   });
 };

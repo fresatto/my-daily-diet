@@ -1,7 +1,11 @@
+"use client";
+
 import React from "react";
-import { TrendingUp } from "lucide-react";
+import { TrendingUp, TriangleAlert } from "lucide-react";
+
 import { WeekProgressDaysEnum } from "@/@types/week-progress";
-import { useWeekProgressSuspenseQuery } from "@/services/queries/week-progress";
+import { useWeekProgressQuery } from "@/services/queries/week-progress";
+import { Skeleton } from "@/components/ui/skeleton";
 
 const parsedDays: Record<WeekProgressDaysEnum, string> = {
   [WeekProgressDaysEnum.SUNDAY]: "Dom.",
@@ -14,16 +18,12 @@ const parsedDays: Record<WeekProgressDaysEnum, string> = {
 };
 
 export const WeekProgress: React.FC = () => {
-  const { data } = useWeekProgressSuspenseQuery();
-
-  if (!data) {
-    return null;
-  }
-
-  const { weekProgress } = data;
+  const { data, error, isFetching } = useWeekProgressQuery();
 
   const getFormattedWeekDays = () => {
-    if (!weekProgress) return [];
+    if (!data) return [];
+
+    const { weekProgress } = data;
 
     const weekDaysNameArray = Object.keys(
       weekProgress
@@ -48,13 +48,33 @@ export const WeekProgress: React.FC = () => {
 
   const days = getFormattedWeekDays();
 
-  return (
-    <div className="flex flex-col gap-4 p-6 bg-white rounded-lg border border-gray-200">
-      <div className="flex items-center gap-2">
-        <TrendingUp size={16} />
-        <h3 className="text-sm font-bold">Progresso da semana</h3>
-      </div>
+  const renderContent = () => {
+    if (isFetching) {
+      return (
+        <div className="grid grid-cols-7 gap-2">
+          <Skeleton className="h-[90px] w-full" />
+          <Skeleton className="h-[90px] w-full" />
+          <Skeleton className="h-[90px] w-full" />
+          <Skeleton className="h-[90px] w-full" />
+          <Skeleton className="h-[90px] w-full" />
+          <Skeleton className="h-[90px] w-full" />
+          <Skeleton className="h-[90px] w-full" />
+        </div>
+      );
+    }
 
+    if (error) {
+      return (
+        <div className="flex flex-row items-center gap-2">
+          <TriangleAlert size={16} className="text-gray-500" />
+          <p className="text-sm text-gray-500">
+            Não foi possível carregar o progresso da semana.
+          </p>
+        </div>
+      );
+    }
+
+    return (
       <div className="grid grid-cols-7 gap-2">
         {days.map((item) => (
           <div key={item.day} className="flex flex-col items-center gap-1">
@@ -73,6 +93,16 @@ export const WeekProgress: React.FC = () => {
           </div>
         ))}
       </div>
+    );
+  };
+
+  return (
+    <div className="flex flex-col gap-4 p-6 bg-white rounded-lg border border-gray-200">
+      <div className="flex items-center gap-2">
+        <TrendingUp size={16} />
+        <h3 className="text-sm font-bold">Progresso da semana</h3>
+      </div>
+      {renderContent()}
     </div>
   );
 };
