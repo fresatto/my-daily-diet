@@ -3,21 +3,20 @@
 import React from "react";
 import { Utensils } from "lucide-react";
 
+import { Card } from "@/components/Card";
 import { Progress } from "@/components/ui/progress";
 import {
-  useDailyGoalSummarySuspenseQuery,
-  useDailyGoalSuspenseQuery,
+  useDailyGoalQuery,
+  useDailyGoalSummaryQuery,
 } from "@/services/queries/daily-goal";
 import { useMealsQuery } from "@/services/queries/meals";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export const DailyGoalCard: React.FC = () => {
-  const { data: mealsData } = useMealsQuery();
-  const { data: dailyGoalData } = useDailyGoalSuspenseQuery();
-  const { data: dailyGoalSummaryData } = useDailyGoalSummarySuspenseQuery();
-
-  if (!dailyGoalData || !dailyGoalSummaryData || !mealsData) {
-    return null;
-  }
+  const { data: mealsData, ...mealsQuery } = useMealsQuery();
+  const { data: dailyGoalData, ...dailyGoalQuery } = useDailyGoalQuery();
+  const { data: dailyGoalSummaryData, ...dailyGoalSummaryQuery } =
+    useDailyGoalSummaryQuery();
 
   const dailyGoalProtein = dailyGoalData?.dailyGoal?.protein ?? 0;
 
@@ -35,37 +34,81 @@ export const DailyGoalCard: React.FC = () => {
 
   const totalMeals = mealsData?.meals.length ?? 0;
 
+  const failedToFetchData =
+    mealsQuery.error || dailyGoalQuery.error || dailyGoalSummaryQuery.error;
+
+  const loading =
+    mealsQuery.isFetching ||
+    dailyGoalQuery.isFetching ||
+    dailyGoalSummaryQuery.isFetching;
+
+  const renderContent = () => {
+    if (failedToFetchData) {
+      return <Card.Error title="Erro ao carregar o resumo." />;
+    }
+
+    if (loading) {
+      return (
+        <>
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-4 w-[120px]" />
+            <Skeleton className="h-4 w-full" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-4 w-[120px]" />
+            <Skeleton className="h-4 w-full" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-4 w-[120px]" />
+            <Skeleton className="h-4 w-full" />
+          </div>
+          <div className="flex flex-col gap-2">
+            <Skeleton className="h-4 w-[120px]" />
+            <Skeleton className="h-4 w-full" />
+          </div>
+        </>
+      );
+    }
+
+    return (
+      <>
+        <div className="flex flex-col">
+          <small data-testid="daily-goal-protein">Total de proteínas</small>
+          <strong data-testid="daily-protein-consumed">
+            {dailyProteinConsumed}g
+          </strong>
+        </div>
+        <div className="flex flex-col">
+          <small data-testid="daily-goal-protein">
+            Quantidade necessária para atingir a meta
+          </small>
+          <strong data-testid="daily-protein-consumed">
+            {totalToAchieveGoal}g
+          </strong>
+        </div>
+        <div className="flex flex-col">
+          <small data-testid="daily-goal-protein">Total de refeições</small>
+          <strong data-testid="daily-protein-consumed">{totalMeals}</strong>
+        </div>
+        <div className="flex flex-col gap-2">
+          <small data-testid="daily-goal-protein">Porcentagem</small>
+          <Progress value={Number(percentage)} />
+          <small className="text-sm text-gray-500">
+            {percentage}% do objetivo diário
+          </small>
+        </div>
+      </>
+    );
+  };
+
   return (
-    <div className="flex flex-col gap-4 p-6 bg-white rounded-lg border border-gray-200">
+    <Card.Container>
       <div className="flex items-center justify-between">
         <h3 className="font-bold">Resumo</h3>
         <Utensils />
       </div>
-      <div className="flex flex-col">
-        <small data-testid="daily-goal-protein">Total de proteínas</small>
-        <strong data-testid="daily-protein-consumed">
-          {dailyProteinConsumed}g
-        </strong>
-      </div>
-      <div className="flex flex-col">
-        <small data-testid="daily-goal-protein">
-          Quantidade necessária para atingir a meta
-        </small>
-        <strong data-testid="daily-protein-consumed">
-          {totalToAchieveGoal}g
-        </strong>
-      </div>
-      <div className="flex flex-col">
-        <small data-testid="daily-goal-protein">Total de refeições</small>
-        <strong data-testid="daily-protein-consumed">{totalMeals}</strong>
-      </div>
-      <div className="flex flex-col gap-2">
-        <small data-testid="daily-goal-protein">Porcentagem</small>
-        <Progress value={Number(percentage)} />
-        <small className="text-sm text-gray-500">
-          {percentage}% do objetivo diário
-        </small>
-      </div>
-    </div>
+
+      {renderContent()}
+    </Card.Container>
   );
 };

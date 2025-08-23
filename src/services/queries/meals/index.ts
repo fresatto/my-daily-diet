@@ -50,21 +50,15 @@ export const useMealsQuery = (filters?: MealsQueryFilters) => {
   return useQuery({
     queryKey: mealsQueryKeys.list({ startDate }),
     queryFn: async () => {
-      try {
-        const response = await api.get<MealsResponse>("/meals", {
-          params: {
-            startDate,
-            timezone,
-          },
-        });
+      const response = await api.get<MealsResponse>("/meals", {
+        params: {
+          startDate,
+          timezone,
+        },
+      });
 
-        return response.data;
-      } catch (error) {
-        toast.error("Erro ao buscar refeições");
-        throw error;
-      }
+      return response.data;
     },
-    retry: false,
     select: (data) => {
       try {
         const meals = data.meals.map((meal) => {
