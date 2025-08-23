@@ -10,7 +10,7 @@ import {
   useDailyGoalSummaryQuery,
 } from "@/services/queries/daily-goal";
 import { useMealsQuery } from "@/services/queries/meals";
-import { Skeleton } from "@/components/ui/skeleton";
+import { DailyGoalCardLoading } from "./components/Loading";
 
 export const DailyGoalCard: React.FC = () => {
   const { data: mealsData, ...mealsQuery } = useMealsQuery();
@@ -48,26 +48,7 @@ export const DailyGoalCard: React.FC = () => {
     }
 
     if (loading) {
-      return (
-        <>
-          <div className="flex flex-col gap-2">
-            <Skeleton className="h-4 w-[120px]" />
-            <Skeleton className="h-4 w-full" />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Skeleton className="h-4 w-[120px]" />
-            <Skeleton className="h-4 w-full" />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Skeleton className="h-4 w-[120px]" />
-            <Skeleton className="h-4 w-full" />
-          </div>
-          <div className="flex flex-col gap-2">
-            <Skeleton className="h-4 w-[120px]" />
-            <Skeleton className="h-4 w-full" />
-          </div>
-        </>
-      );
+      return <DailyGoalCardLoading />;
     }
 
     return (

@@ -5,8 +5,8 @@ import { TrendingUp } from "lucide-react";
 
 import { WeekProgressDaysEnum } from "@/@types/week-progress";
 import { useWeekProgressQuery } from "@/services/queries/week-progress";
-import { Skeleton } from "@/components/ui/skeleton";
 import { Card } from "@/components/Card";
+import { WeekProgressLoading } from "./components/loading";
 
 const parsedDays: Record<WeekProgressDaysEnum, string> = {
   [WeekProgressDaysEnum.SUNDAY]: "Dom.",
@@ -51,17 +51,7 @@ export const WeekProgress: React.FC = () => {
 
   const renderContent = () => {
     if (isFetching) {
-      return (
-        <div className="grid grid-cols-7 gap-2">
-          <Skeleton className="h-[90px] w-full" />
-          <Skeleton className="h-[90px] w-full" />
-          <Skeleton className="h-[90px] w-full" />
-          <Skeleton className="h-[90px] w-full" />
-          <Skeleton className="h-[90px] w-full" />
-          <Skeleton className="h-[90px] w-full" />
-          <Skeleton className="h-[90px] w-full" />
-        </div>
-      );
+      return <WeekProgressLoading />;
     }
 
     if (error) {
