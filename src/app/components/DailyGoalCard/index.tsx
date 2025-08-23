@@ -8,10 +8,10 @@ import {
   useDailyGoalSummarySuspenseQuery,
   useDailyGoalSuspenseQuery,
 } from "@/services/queries/daily-goal";
-import { useMealsSuspenseQuery } from "@/services/queries/meals";
+import { useMealsQuery } from "@/services/queries/meals";
 
 export const DailyGoalCard: React.FC = () => {
-  const { data: mealsData } = useMealsSuspenseQuery();
+  const { data: mealsData } = useMealsQuery();
   const { data: dailyGoalData } = useDailyGoalSuspenseQuery();
   const { data: dailyGoalSummaryData } = useDailyGoalSummarySuspenseQuery();
 

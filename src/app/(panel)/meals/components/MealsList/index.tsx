@@ -12,17 +12,14 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog";
-import {
-  useDeleteMealMutation,
-  useMealsSuspenseQuery,
-} from "@/services/queries/meals";
+import { useDeleteMealMutation, useMealsQuery } from "@/services/queries/meals";
 import { toast } from "sonner";
 
 export const MealsList: React.FC = () => {
   const [open, setOpen] = useState(false);
   const [selectedMealId, setSelectedMealId] = useState<string>();
 
-  const { data } = useMealsSuspenseQuery();
+  const { data } = useMealsQuery();
   const { mutate: deleteMeal, isPending } = useDeleteMealMutation({
     onSuccess: () => {
       toast.success("Refeição deletada com sucesso!");
