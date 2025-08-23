@@ -6,13 +6,7 @@ import { Toaster } from "sonner";
 
 import "./globals.css";
 
-import {
-  NavigationMenu,
-  NavigationMenuItem,
-  NavigationMenuLink,
-  NavigationMenuList,
-} from "@/components/ui/navigation-menu";
-import { NavLink } from "@/components/NavLink";
+import { Navbar } from "@/components/Navbar";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -41,35 +35,12 @@ export default function RootLayout({
       >
         <Providers>
           <div className="flex flex-col h-screen">
-            <header className="border-b border-b-gray-300 grow-0">
+            <header className="border-b border-b-gray-300 grow-0 py-6 md:py-4">
               <div className="mx-auto max-w-7xl w-full px-4 flex items-center justify-between">
                 <h1 className="text-2xl font-bold">
-                  <Link href="/" className="lg:hidden">
-                    PTracker
-                  </Link>
-                  <Link href="/" className="hidden lg:block">
-                    ProteinTracker
-                  </Link>
+                  <Link href="/">ProteinTracker</Link>
                 </h1>
-                <NavigationMenu className="py-4 " viewport={false}>
-                  <NavigationMenuList className="flex gap-3">
-                    <NavigationMenuItem>
-                      <NavigationMenuLink asChild>
-                        <NavLink href="/meals">Refeições</NavLink>
-                      </NavigationMenuLink>
-                    </NavigationMenuItem>
-                    <NavigationMenuItem>
-                      <NavigationMenuLink asChild>
-                        <NavLink href="/foods">Alimentos</NavLink>
-                      </NavigationMenuLink>
-                    </NavigationMenuItem>
-                    <NavigationMenuItem>
-                      <NavigationMenuLink asChild>
-                        <NavLink href="/daily-goal">Objetivo diário</NavLink>
-                      </NavigationMenuLink>
-                    </NavigationMenuItem>
-                  </NavigationMenuList>
-                </NavigationMenu>
+                <Navbar />
               </div>
             </header>
             <div className="mx-auto max-w-7xl w-full p-4 flex-1">
