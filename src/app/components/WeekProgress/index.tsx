@@ -1,11 +1,12 @@
 "use client";
 
 import React from "react";
-import { TrendingUp, TriangleAlert } from "lucide-react";
+import { TrendingUp } from "lucide-react";
 
 import { WeekProgressDaysEnum } from "@/@types/week-progress";
 import { useWeekProgressQuery } from "@/services/queries/week-progress";
 import { Skeleton } from "@/components/ui/skeleton";
+import { Card } from "@/components/Card";
 
 const parsedDays: Record<WeekProgressDaysEnum, string> = {
   [WeekProgressDaysEnum.SUNDAY]: "Dom.",
@@ -64,14 +65,7 @@ export const WeekProgress: React.FC = () => {
     }
 
     if (error) {
-      return (
-        <div className="flex flex-row items-center gap-2">
-          <TriangleAlert size={16} className="text-gray-500" />
-          <p className="text-sm text-gray-500">
-            Não foi possível carregar o progresso da semana.
-          </p>
-        </div>
-      );
+      return <Card.Error title="Erro ao carregar o progresso da semana." />;
     }
 
     return (
@@ -97,12 +91,12 @@ export const WeekProgress: React.FC = () => {
   };
 
   return (
-    <div className="flex flex-col gap-4 p-6 bg-white rounded-lg border border-gray-200">
+    <Card.Container>
       <div className="flex items-center gap-2">
         <TrendingUp size={16} />
         <h3 className="text-sm font-bold">Progresso da semana</h3>
       </div>
       {renderContent()}
-    </div>
+    </Card.Container>
   );
 };

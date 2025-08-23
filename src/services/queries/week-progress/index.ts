@@ -6,7 +6,6 @@ import { toast } from "sonner";
 export const weekProgressQueryKeys = {
   all: () => ["week-progress"],
   list: () => [...weekProgressQueryKeys.all(), "list"],
-  listSuspense: () => [...weekProgressQueryKeys.all(), "listSuspense"],
 };
 
 export const useWeekProgressQuery = () => {

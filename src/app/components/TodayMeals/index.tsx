@@ -19,13 +19,17 @@ const Loading = () => {
 };
 
 export const TodayMeals = () => {
-  const { data, isFetching } = useMealsQuery();
+  const { data, error, isFetching } = useMealsQuery();
 
   const shouldRenderEmptyState = !data?.meals || data?.meals?.length === 0;
 
   const renderContent = () => {
     if (isFetching) {
       return <Loading />;
+    }
+
+    if (error) {
+      return <Card.Error title="Erro ao carregar refeições diárias." />;
     }
 
     if (shouldRenderEmptyState) {
@@ -65,9 +69,12 @@ export const TodayMeals = () => {
         <h3 className="text-sm font-bold">Refeições de hoje</h3>
       </div>
       {renderContent()}
-      <NewMealDialog>
-        <Button data-testid="new-meal-button">Nova refeição</Button>
-      </NewMealDialog>
+
+      {!error && (
+        <NewMealDialog>
+          <Button data-testid="new-meal-button">Nova refeição</Button>
+        </NewMealDialog>
+      )}
     </Card.Container>
   );
 };
