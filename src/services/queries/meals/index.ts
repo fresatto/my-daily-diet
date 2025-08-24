@@ -3,7 +3,6 @@ import {
   UseMutationOptions,
   useQuery,
   useQueryClient,
-  useSuspenseQuery,
 } from "@tanstack/react-query";
 import { format } from "date-fns";
 import { toast } from "sonner";
@@ -21,7 +20,7 @@ type MealsQueryFilters = {
 
 export const mealsQueryKeys = {
   all: () => ["meals"],
-  listSuspense: (filters?: MealsQueryFilters) => [
+  list: (filters?: MealsQueryFilters) => [
     ...mealsQueryKeys.all(),
     "listSuspense",
     filters,
@@ -49,7 +48,7 @@ export const useMealsQuery = (filters?: MealsQueryFilters) => {
   const timezone = getTimeZone();
 
   return useQuery({
-    queryKey: mealsQueryKeys.listSuspense({ startDate }),
+    queryKey: mealsQueryKeys.list({ startDate }),
     queryFn: async () => {
       const response = await api.get<MealsResponse>("/meals", {
         params: {
@@ -57,65 +56,6 @@ export const useMealsQuery = (filters?: MealsQueryFilters) => {
           timezone,
         },
       });
-
-      if (response.status !== 200) {
-        toast.error("Erro ao buscar refeições");
-
-        return {
-          meals: [],
-        };
-      }
-
-      return response.data;
-    },
-    select: (data) => {
-      try {
-        const meals = data.meals.map((meal) => {
-          const localDate = parseDateToLocalUTC(meal.created_at);
-          const amountSuffix = getMealAmountSuffix(meal);
-          const formattedAmount = `${meal.amount}${amountSuffix}`;
-          const formattedTime = format(localDate, "'às' HH:mm");
-
-          return {
-            ...meal,
-            formattedAmount,
-            formattedTime,
-            created_at: format(localDate, "dd/MM/yyyy HH:mm"),
-          };
-        });
-
-        return {
-          meals,
-        };
-      } catch {
-        throw new Error("Erro ao formatar as refeições.");
-      }
-    },
-    staleTime: 1000 * 60 * 5, // 5 minutes,
-  });
-};
-
-export const useMealsSuspenseQuery = (filters?: MealsQueryFilters) => {
-  const startDate = getMealsStartDate(filters);
-  const timezone = getTimeZone();
-
-  return useSuspenseQuery({
-    queryKey: mealsQueryKeys.listSuspense({ startDate }),
-    queryFn: async () => {
-      const response = await api.get<MealsResponse>("/meals", {
-        params: {
-          startDate,
-          timezone,
-        },
-      });
-
-      if (response.status !== 200) {
-        toast.error("Erro ao buscar refeições");
-
-        return {
-          meals: [],
-        };
-      }
 
       return response.data;
     },
@@ -170,7 +110,7 @@ export const useCreateMealMutation = ({
       const startDate = getMealsStartDate();
 
       queryClient.invalidateQueries({
-        queryKey: mealsQueryKeys.listSuspense({ startDate }),
+        queryKey: mealsQueryKeys.list({ startDate }),
       });
 
       queryClient.invalidateQueries({
@@ -214,7 +154,7 @@ export const useDeleteMealMutation = ({
     onSuccess: (deletedMealId, data, context) => {
       const startDate = getMealsStartDate();
 
-      const listMealsQueryKey = mealsQueryKeys.listSuspense({ startDate });
+      const listMealsQueryKey = mealsQueryKeys.list({ startDate });
 
       const oldData =
         queryClient.getQueryData<MealsResponse>(listMealsQueryKey);

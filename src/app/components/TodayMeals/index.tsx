@@ -5,27 +5,24 @@ import { Utensils } from "lucide-react";
 
 import { Card } from "@/components/Card";
 import { Button } from "@/components/ui/button";
-import { Skeleton } from "@/components/ui/skeleton";
 import { useMealsQuery } from "@/services/queries/meals";
 import { NewMealDialog } from "@/components/NewMealDialog";
-
-const Loading = () => {
-  return (
-    <>
-      <Skeleton className="h-15 w-full" />
-      <Skeleton className="h-15 w-full" />
-    </>
-  );
-};
+import { TodayMealsLoading } from "./components/Loading";
 
 export const TodayMeals = () => {
-  const { data, isFetching } = useMealsQuery();
+  const { data, error, isFetching } = useMealsQuery();
 
   const shouldRenderEmptyState = !data?.meals || data?.meals?.length === 0;
 
+  const shouldRenderNewMealButton = !error && !isFetching;
+
   const renderContent = () => {
     if (isFetching) {
-      return <Loading />;
+      return <TodayMealsLoading />;
+    }
+
+    if (error) {
+      return <Card.Error title="Erro ao carregar refeições diárias." />;
     }
 
     if (shouldRenderEmptyState) {
@@ -65,9 +62,12 @@ export const TodayMeals = () => {
         <h3 className="text-sm font-bold">Refeições de hoje</h3>
       </div>
       {renderContent()}
-      <NewMealDialog>
-        <Button data-testid="new-meal-button">Nova refeição</Button>
-      </NewMealDialog>
+
+      {shouldRenderNewMealButton && (
+        <NewMealDialog>
+          <Button data-testid="new-meal-button">Nova refeição</Button>
+        </NewMealDialog>
+      )}
     </Card.Container>
   );
 };
