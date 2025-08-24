@@ -23,7 +23,7 @@ export const DailyGoalsList: React.FC = () => {
     ? `${data?.dailyGoal.calories}kcal`
     : "0";
 
-  if (!isFetching) {
+  if (isFetching) {
     return <DailyGoalsLoading />;
   }
 
