@@ -2,22 +2,30 @@
 
 import React from "react";
 
-import { useDailyGoalSuspenseQuery } from "@/services/queries/daily-goal";
+import { useDailyGoalQuery } from "@/services/queries/daily-goal";
 import { DailyGoalsContainer } from "./Container";
+import { DailyGoalsLoading } from "./Loading";
 
 export const DailyGoalsList: React.FC = () => {
-  const { data } = useDailyGoalSuspenseQuery();
+  const { data, isFetching } = useDailyGoalQuery();
 
-  if (!data.dailyGoal) {
-    return null;
+  const formattedProtein = data?.dailyGoal.protein
+    ? `${data?.dailyGoal.protein}g`
+    : "0";
+
+  const formattedCarbohydrate = data?.dailyGoal.carbohydrate
+    ? `${data?.dailyGoal.carbohydrate}g`
+    : "0";
+
+  const formattedFat = data?.dailyGoal.fat ? `${data?.dailyGoal.fat}g` : "0";
+
+  const formattedCalories = data?.dailyGoal.calories
+    ? `${data?.dailyGoal.calories}kcal`
+    : "0";
+
+  if (!isFetching) {
+    return <DailyGoalsLoading />;
   }
-
-  const { protein, carbohydrate, fat, calories } = data.dailyGoal;
-
-  const formattedProtein = protein ? `${protein}g` : "0";
-  const formattedCarbohydrate = carbohydrate ? `${carbohydrate}g` : "0";
-  const formattedFat = fat ? `${fat}g` : "0";
-  const formattedCalories = calories ? `${calories}kcal` : "0";
 
   return (
     <DailyGoalsContainer>

@@ -1,6 +1,5 @@
 "use client";
 
-import { Suspense } from "react";
 import { useForm } from "react-hook-form";
 import { Card } from "@/components/Card";
 import { PageHeader } from "@/components/PageHeader";
@@ -52,9 +51,7 @@ export default function DailyGoal() {
       <div className="flex flex-col gap-4">
         <Card.Container>
           <h3 className="font-bold">Metas atuais</h3>
-          <Suspense fallback={<DailyGoals.Loading />}>
-            <DailyGoals.List />
-          </Suspense>
+          <DailyGoals.List />
         </Card.Container>
         <Card.Container>
           <div>
