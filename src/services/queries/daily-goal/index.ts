@@ -11,6 +11,8 @@ import {
   DailyGoalResponse,
   DailyGoalSummaryResponse,
 } from "@/@types/daily-goal";
+import { format } from "date-fns";
+import { getTimeZone } from "@/lib/date";
 
 export const dailyGoalQueryKeys = {
   all: () => ["dailyGoal"],
@@ -32,11 +34,20 @@ export function useDailyGoalQuery() {
 }
 
 export function useDailyGoalSummaryQuery() {
+  const startDate = format(new Date(), "yyyy-MM-dd");
+  const timezone = getTimeZone();
+
   return useQuery({
     queryKey: dailyGoalQueryKeys.getSummary(),
     queryFn: async () => {
       const response = await api.get<DailyGoalSummaryResponse>(
-        "/daily-goal/summary"
+        "/daily-goal/summary",
+        {
+          params: {
+            startDate,
+            timezone,
+          },
+        }
       );
 
       return response.data;
