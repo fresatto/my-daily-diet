@@ -5,7 +5,7 @@ export const createMealSchema = z.object({
   items: z.array(
     z.object({
       food_id: z.uuid("Alimento é obrigatório"),
-      amount: z.number().min(1, "Quantidade é obrigatória"),
+      amount: z.coerce.number<number>().min(1, "Quantidade é obrigatória"),
     })
   ),
 });

@@ -89,12 +89,7 @@ export const useCreateMealMutation = ({
 
   return useMutation({
     mutationFn: async (data) => {
-      const formattedPayload = {
-        ...data,
-        amount: Number(data.amount),
-      };
-
-      const response = await api.post("/meals", formattedPayload);
+      const response = await api.post("/meals", data);
 
       return response.data;
     },

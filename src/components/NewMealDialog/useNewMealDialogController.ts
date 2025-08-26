@@ -30,7 +30,8 @@ export function useNewMealDialogController() {
   const [isOpen, setIsOpen] = useState(false);
 
   const { data: foodsData } = useFoodsQuery();
-  const { mutate: createMeal } = useCreateMealMutation({
+
+  const { mutate: createMeal, isPending } = useCreateMealMutation({
     onSuccess: () => {
       toast.success("Refeição cadastrada com sucesso");
       handleOpenChange(false);
@@ -54,6 +55,7 @@ export function useNewMealDialogController() {
     isOpen,
     handleOpenChange,
     onSubmit,
+    isPending,
     foods: foodsData?.foods,
     foodItemsFieldArray,
   };

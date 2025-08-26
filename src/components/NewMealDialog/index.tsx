@@ -36,6 +36,7 @@ export function NewMealDialog({ children }: NewMealDialogProps) {
     isOpen,
     handleOpenChange,
     onSubmit,
+    isPending,
     foods,
     foodItemsFieldArray,
   } = useNewMealDialogController();
@@ -135,7 +136,12 @@ export function NewMealDialog({ children }: NewMealDialogProps) {
                 </FormItem>
               );
             })}
-            <Button type="submit" data-testid="new-meal-dialog-submit-button">
+            <Button
+              disabled={isPending}
+              loading={isPending}
+              type="submit"
+              data-testid="new-meal-dialog-submit-button"
+            >
               Cadastrar
             </Button>
           </form>
