@@ -43,12 +43,12 @@ export const TodayMeals = () => {
       >
         <div className="flex flex-col">
           <h3 data-testid="meal-name" className="text-sm font-bold">
-            {meal.food.name}
+            {meal.name}
           </h3>
           <small data-testid="meal-time">{meal.formattedTime}</small>
         </div>
         <div className="flex flex-col items-end text-xs">
-          <p className="font-bold">{meal.proteinConsumed}g</p>
+          <p className="font-bold">{meal.total_protein}g</p>
           <p>proteína</p>
         </div>
       </div>
