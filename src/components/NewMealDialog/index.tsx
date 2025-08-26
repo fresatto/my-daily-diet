@@ -31,8 +31,14 @@ type NewMealDialogProps = {
 };
 
 export function NewMealDialog({ children }: NewMealDialogProps) {
-  const { form, isOpen, handleOpenChange, onSubmit, foods } =
-    useNewMealDialogController();
+  const {
+    form,
+    isOpen,
+    handleOpenChange,
+    onSubmit,
+    foods,
+    foodItemsFieldArray,
+  } = useNewMealDialogController();
 
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
@@ -63,60 +69,72 @@ export function NewMealDialog({ children }: NewMealDialogProps) {
               )}
             />
 
-            <div className="flex gap-2">
-              <FormField
-                control={form.control}
-                name="food_id"
-                render={({ field, fieldState: { error } }) => (
-                  <FormItem className="flex-1">
-                    <FormLabel>Alimento</FormLabel>
-                    <FormControl>
-                      <Select {...field} onValueChange={field.onChange}>
-                        <SelectTrigger
-                          {...field}
-                          className={cn(
-                            "w-full",
-                            error && "border-destructive"
-                          )}
-                          data-testid="new-meal-dialog-select-food-input"
-                        >
-                          <SelectValue placeholder="Selecione o alimento" />
-                        </SelectTrigger>
-                        <SelectContent>
-                          {foods?.map((food) => (
-                            <SelectItem key={food.id} value={food.id}>
-                              <span data-testid="new-meal-food-option">
-                                {food.name} ({food.formattedPortionType})
-                              </span>
-                            </SelectItem>
-                          ))}
-                        </SelectContent>
-                      </Select>
-                    </FormControl>
-                    {error && <FormMessage>{error.message}</FormMessage>}
-                  </FormItem>
-                )}
-              />
-              <FormField
-                control={form.control}
-                name="amount"
-                render={({ field, fieldState: { error } }) => (
-                  <FormItem>
-                    <FormLabel>Quantidade</FormLabel>
-                    <FormControl>
-                      <Input
-                        {...field}
-                        data-testid="new-meal-dialog-amount-input"
-                        placeholder="Quantidade"
-                        type="number"
-                      />
-                    </FormControl>
-                    {error && <FormMessage>{error.message}</FormMessage>}
-                  </FormItem>
-                )}
-              />
-            </div>
+            {foodItemsFieldArray.fields.map((field, index) => {
+              return (
+                <FormItem key={field.id}>
+                  <div className="flex gap-2">
+                    <FormField
+                      control={form.control}
+                      name={`items.${index}.food_id`}
+                      render={({
+                        field: renderedField,
+                        fieldState: { error },
+                      }) => (
+                        <FormItem className="flex-1">
+                          <FormControl>
+                            <Select
+                              {...renderedField}
+                              onValueChange={renderedField.onChange}
+                            >
+                              <SelectTrigger
+                                className={cn(
+                                  "w-full",
+                                  error && "border-destructive"
+                                )}
+                                data-testid="new-meal-dialog-select-food-input"
+                              >
+                                <SelectValue placeholder="Alimento" />
+                              </SelectTrigger>
+                              <SelectContent>
+                                {foods?.map((food) => (
+                                  <SelectItem key={food.id} value={food.id}>
+                                    <span data-testid="new-meal-food-option">
+                                      {food.name} ({food.formattedPortionType})
+                                    </span>
+                                  </SelectItem>
+                                ))}
+                              </SelectContent>
+                            </Select>
+                          </FormControl>
+                          {error && <FormMessage>{error.message}</FormMessage>}
+                        </FormItem>
+                      )}
+                    />
 
+                    <FormField
+                      control={form.control}
+                      name={`items.${index}.amount`}
+                      render={({
+                        field: renderedField,
+                        fieldState: { error },
+                      }) => (
+                        <FormItem className="w-[100px]">
+                          <FormControl>
+                            <Input
+                              {...renderedField}
+                              data-testid="new-meal-dialog-amount-input"
+                              placeholder="Quantidade"
+                              type="number"
+                            />
+                          </FormControl>
+                          {error && <FormMessage>{error.message}</FormMessage>}
+                        </FormItem>
+                      )}
+                    />
+                  </div>
+                </FormItem>
+              );
+            })}
             <Button type="submit" data-testid="new-meal-dialog-submit-button">
               Cadastrar
             </Button>
