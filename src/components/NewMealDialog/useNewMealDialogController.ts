@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useFieldArray, useForm } from "react-hook-form";
+import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { zodResolver } from "@hookform/resolvers/zod";
 
@@ -20,11 +20,6 @@ export function useNewMealDialogController() {
       ],
     },
     resolver: zodResolver(createMealSchema),
-  });
-
-  const foodItemsFieldArray = useFieldArray<CreateMealSchema>({
-    control: form.control,
-    name: "items",
   });
 
   const [isOpen, setIsOpen] = useState(false);
@@ -57,6 +52,5 @@ export function useNewMealDialogController() {
     onSubmit,
     isPending,
     foods: foodsData?.foods,
-    foodItemsFieldArray,
   };
 }
