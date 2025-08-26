@@ -2,19 +2,12 @@ import { z } from "zod";
 
 export const createMealSchema = z.object({
   name: z.string().min(1, "Nome é obrigatório"),
-  food_id: z.uuid("Alimento é obrigatório"),
-  amount: z
-    .string()
-    .min(1, "Campo obrigatório")
-    .refine(
-      (value) => {
-        const number = Number(value);
-        return number > 0;
-      },
-      {
-        message: "Quantidade deve ser maior que 1 (g ou unidade).",
-      }
-    ),
+  items: z.array(
+    z.object({
+      food_id: z.uuid("Alimento é obrigatório"),
+      amount: z.number().min(1, "Quantidade é obrigatória"),
+    })
+  ),
 });
 
 export type CreateMealSchema = z.infer<typeof createMealSchema>;
