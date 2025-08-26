@@ -41,6 +41,16 @@ export function NewMealDialog({ children }: NewMealDialogProps) {
     foodItemsFieldArray,
   } = useNewMealDialogController();
 
+  // TODO: Extrair para um componente
+  const { append } = foodItemsFieldArray;
+
+  const handleAddFoodItem = () => {
+    append({
+      food_id: "",
+      amount: 0,
+    });
+  };
+
   return (
     <Dialog open={isOpen} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
@@ -136,6 +146,13 @@ export function NewMealDialog({ children }: NewMealDialogProps) {
                 </FormItem>
               );
             })}
+            <Button
+              type="button"
+              variant="secondary"
+              onClick={handleAddFoodItem}
+            >
+              Adicionar alimento
+            </Button>
             <Button
               disabled={isPending}
               loading={isPending}
