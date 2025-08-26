@@ -1,6 +1,7 @@
 import { z } from "zod";
 
 export const createMealSchema = z.object({
+  name: z.string().min(1, "Nome é obrigatório"),
   food_id: z.uuid("Alimento é obrigatório"),
   amount: z
     .string()

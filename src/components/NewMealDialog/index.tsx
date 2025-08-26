@@ -47,52 +47,76 @@ export function NewMealDialog({ children }: NewMealDialogProps) {
           <form onSubmit={form.handleSubmit(onSubmit)} className="grid gap-4">
             <FormField
               control={form.control}
-              name="food_id"
+              name="name"
               render={({ field, fieldState: { error } }) => (
                 <FormItem>
-                  <FormLabel>Alimento</FormLabel>
-                  <FormControl>
-                    <Select {...field} onValueChange={field.onChange}>
-                      <SelectTrigger
-                        {...field}
-                        className={cn("w-full", error && "border-destructive")}
-                        data-testid="new-meal-dialog-select-food-input"
-                      >
-                        <SelectValue placeholder="Selecione o alimento" />
-                      </SelectTrigger>
-                      <SelectContent>
-                        {foods?.map((food) => (
-                          <SelectItem key={food.id} value={food.id}>
-                            <span data-testid="new-meal-food-option">
-                              {food.name} ({food.formattedPortionType})
-                            </span>
-                          </SelectItem>
-                        ))}
-                      </SelectContent>
-                    </Select>
-                  </FormControl>
-                  {error && <FormMessage>{error.message}</FormMessage>}
-                </FormItem>
-              )}
-            />
-            <FormField
-              control={form.control}
-              name="amount"
-              render={({ field, fieldState: { error } }) => (
-                <FormItem>
-                  <FormLabel>Quantidade</FormLabel>
+                  <FormLabel>Nome</FormLabel>
                   <FormControl>
                     <Input
                       {...field}
-                      data-testid="new-meal-dialog-amount-input"
-                      placeholder="Quantidade (gramas ou unidade)"
-                      type="number"
+                      placeholder="Insira o nome da refeição"
+                      type="text"
                     />
                   </FormControl>
                   {error && <FormMessage>{error.message}</FormMessage>}
                 </FormItem>
               )}
             />
+
+            <div className="flex gap-2">
+              <FormField
+                control={form.control}
+                name="food_id"
+                render={({ field, fieldState: { error } }) => (
+                  <FormItem className="flex-1">
+                    <FormLabel>Alimento</FormLabel>
+                    <FormControl>
+                      <Select {...field} onValueChange={field.onChange}>
+                        <SelectTrigger
+                          {...field}
+                          className={cn(
+                            "w-full",
+                            error && "border-destructive"
+                          )}
+                          data-testid="new-meal-dialog-select-food-input"
+                        >
+                          <SelectValue placeholder="Selecione o alimento" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {foods?.map((food) => (
+                            <SelectItem key={food.id} value={food.id}>
+                              <span data-testid="new-meal-food-option">
+                                {food.name} ({food.formattedPortionType})
+                              </span>
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
+                    </FormControl>
+                    {error && <FormMessage>{error.message}</FormMessage>}
+                  </FormItem>
+                )}
+              />
+              <FormField
+                control={form.control}
+                name="amount"
+                render={({ field, fieldState: { error } }) => (
+                  <FormItem>
+                    <FormLabel>Quantidade</FormLabel>
+                    <FormControl>
+                      <Input
+                        {...field}
+                        data-testid="new-meal-dialog-amount-input"
+                        placeholder="Quantidade"
+                        type="number"
+                      />
+                    </FormControl>
+                    {error && <FormMessage>{error.message}</FormMessage>}
+                  </FormItem>
+                )}
+              />
+            </div>
+
             <Button type="submit" data-testid="new-meal-dialog-submit-button">
               Cadastrar
             </Button>
