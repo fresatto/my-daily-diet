@@ -1,4 +1,5 @@
 import React from "react";
+import { Trash } from "lucide-react";
 import { useFieldArray, useFormContext } from "react-hook-form";
 
 import {
@@ -45,6 +46,8 @@ export const MultiFoodField: React.FC = () => {
   return (
     <div className="flex flex-col gap-2">
       {fields.map((field, index) => {
+        const shouldShowRemoveButton = index > 0;
+
         return (
           <FormItem key={field.id}>
             <div className="flex gap-2">
@@ -100,6 +103,15 @@ export const MultiFoodField: React.FC = () => {
                   </FormItem>
                 )}
               />
+
+              <Button
+                type="button"
+                disabled={!shouldShowRemoveButton}
+                variant={shouldShowRemoveButton ? "destructive" : "secondary"}
+                onClick={() => handleRemoveFoodItem(index)}
+              >
+                <Trash />
+              </Button>
             </div>
           </FormItem>
         );
