@@ -15,7 +15,7 @@ export function useNewMealDialogController() {
       items: [
         {
           food_id: "",
-          amount: 0,
+          amount: undefined,
         },
       ],
     },

@@ -95,7 +95,7 @@ export const MultiFoodField: React.FC = () => {
                       <Input
                         {...renderedField}
                         data-testid="new-meal-dialog-amount-input"
-                        placeholder="Quantidade"
+                        placeholder="Qtd"
                         type="number"
                       />
                     </FormControl>
