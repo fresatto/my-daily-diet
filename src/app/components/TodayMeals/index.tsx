@@ -5,12 +5,12 @@ import { Utensils } from "lucide-react";
 
 import { Card } from "@/components/Card";
 import { Button } from "@/components/ui/button";
-import { useMealsQuery } from "@/services/queries/meals";
 import { NewMealDialog } from "@/components/NewMealDialog";
 import { TodayMealsLoading } from "./components/Loading";
+import { useConsumedMealsQuery } from "@/services/queries/consumed-meals";
 
 export const TodayMeals = () => {
-  const { data, error, isFetching } = useMealsQuery();
+  const { data, error, isFetching } = useConsumedMealsQuery();
 
   const shouldRenderEmptyState = !data?.meals || data?.meals?.length === 0;
 
