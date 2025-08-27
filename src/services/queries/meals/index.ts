@@ -12,7 +12,7 @@ import { CreateMealSchema } from "@/components/NewMealDialog/schema";
 import { getTimeZone, parseDateToLocalUTC } from "@/lib/date";
 import { weekProgressQueryKeys } from "../week-progress";
 import { dailyGoalQueryKeys } from "../daily-goal";
-import { MealsResponse } from "@/@types/meal";
+import { Meal, MealsResponse } from "@/@types/meal";
 
 type MealsQueryFilters = {
   startDate: string;
@@ -82,7 +82,7 @@ export const useCreateMealMutation = ({
   onSuccess,
   ...mutationsProps
 }: Omit<
-  UseMutationOptions<unknown, unknown, CreateMealSchema, unknown>,
+  UseMutationOptions<Meal, unknown, CreateMealSchema, unknown>,
   "mutationFn"
 >) => {
   const queryClient = useQueryClient();

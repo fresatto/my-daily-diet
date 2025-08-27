@@ -1,9 +1,14 @@
-import { useQuery } from "@tanstack/react-query";
+import {
+  useMutation,
+  UseMutationOptions,
+  useQuery,
+} from "@tanstack/react-query";
 import { format } from "date-fns-tz";
 
 import { getTimeZone, parseDateToLocalUTC } from "@/lib/date";
 import { api } from "@/services/api";
 import { MealsResponse } from "@/@types/meal";
+import { CreateConsumedMealRequest } from "@/@types/consumed-meals";
 
 export const consumedMealsQueryKeys = {
   base: () => ["consumed-meals"],
@@ -50,5 +55,23 @@ export const useConsumedMealsQuery = () => {
         throw new Error("Erro ao formatar as refeições.");
       }
     },
+  });
+};
+
+export const useConsumedMealsMutation = (
+  options: Omit<
+    UseMutationOptions<unknown, unknown, CreateConsumedMealRequest, unknown>,
+    "mutationFn"
+  >
+) => {
+  return useMutation({
+    mutationFn: async ({ meal_id }: CreateConsumedMealRequest) => {
+      const response = await api.post("/consumed-meals", {
+        meal_id,
+      });
+
+      return response.data;
+    },
+    ...options,
   });
 };

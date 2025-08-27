@@ -9,6 +9,7 @@ import { useFoodsQuery } from "@/services/queries/foods";
 import { useCreateMealMutation } from "@/services/queries/meals";
 
 import { CreateMealSchema, createMealSchema } from "./schema";
+import { useConsumedMealsMutation } from "@/services/queries/consumed-meals";
 
 export function useNewMealDialogController() {
   const form = useForm({
@@ -28,9 +29,16 @@ export function useNewMealDialogController() {
 
   const { data: foodsData } = useFoodsQuery();
 
+  const { mutate: createConsumedMeal, isPending: isCreatingConsumedMeal } =
+    useConsumedMealsMutation({
+      onSuccess: () => {
+        toast.success("Refeição adicionada com sucesso!");
+      },
+    });
+
   const { mutate: createMeal, isPending } = useCreateMealMutation({
-    onSuccess: () => {
-      toast.success("Refeição cadastrada com sucesso");
+    onSuccess: ({ id: meal_id }) => {
+      createConsumedMeal({ meal_id });
       handleOpenChange(false);
     },
     onError: () => {
@@ -52,7 +60,7 @@ export function useNewMealDialogController() {
     isOpen,
     handleOpenChange,
     onSubmit,
-    isPending,
+    isPending: isPending || isCreatingConsumedMeal,
     foods: foodsData?.foods,
   };
 }
