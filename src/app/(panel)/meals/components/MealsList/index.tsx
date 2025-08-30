@@ -95,7 +95,9 @@ export const MealsList: React.FC = () => {
                 <DialogHeader>
                   <DialogTitle>Tem certeza?</DialogTitle>
                   <DialogDescription>
-                    Essa ação não pode ser desfeita.
+                    Ao excluir a refeição, todas as{" "}
+                    <strong>refeições consumidas</strong> relacionadas a ela
+                    serão apagadas. Essa ação não pode ser desfeita.
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>

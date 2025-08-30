@@ -38,7 +38,7 @@ const MenuItems = ({ className, onLinkClick }: MenuItemsProps) => {
         <NavigationMenuItem>
           <NavigationMenuLink asChild>
             <NavLink href="/meals" onClick={onLinkClick}>
-              Refeições
+              Refeições salvas
             </NavLink>
           </NavigationMenuLink>
         </NavigationMenuItem>
