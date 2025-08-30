@@ -8,11 +8,12 @@ import { format } from "date-fns";
 import { toast } from "sonner";
 
 import { api } from "@/services/api";
-import { Meal, MealsResponse } from "@/@types/dtos";
 import { CreateMealSchema } from "@/components/NewMealDialog/schema";
 import { getTimeZone, parseDateToLocalUTC } from "@/lib/date";
 import { weekProgressQueryKeys } from "../week-progress";
 import { dailyGoalQueryKeys } from "../daily-goal";
+import { Meal, MealsResponse } from "@/@types/meal";
+import { consumedMealsQueryKeys } from "../consumed-meals";
 
 type MealsQueryFilters = {
   startDate: string;
@@ -25,14 +26,6 @@ export const mealsQueryKeys = {
     "listSuspense",
     filters,
   ],
-};
-
-const getMealAmountSuffix = (meal: Meal) => {
-  if (meal.food.portion_type === "grams") {
-    return "g";
-  }
-
-  return meal.amount > 0 ? "unidades" : "unidades";
 };
 
 const getMealsStartDate = (filters?: MealsQueryFilters) => {
@@ -63,8 +56,8 @@ export const useMealsQuery = (filters?: MealsQueryFilters) => {
       try {
         const meals = data.meals.map((meal) => {
           const localDate = parseDateToLocalUTC(meal.created_at);
-          const amountSuffix = getMealAmountSuffix(meal);
-          const formattedAmount = `${meal.amount}${amountSuffix}`;
+          const amountSuffix = "g";
+          const formattedAmount = `${100}${amountSuffix}`;
           const formattedTime = format(localDate, "'às' HH:mm");
 
           return {
@@ -90,19 +83,14 @@ export const useCreateMealMutation = ({
   onSuccess,
   ...mutationsProps
 }: Omit<
-  UseMutationOptions<unknown, unknown, CreateMealSchema, unknown>,
+  UseMutationOptions<Meal, unknown, CreateMealSchema, unknown>,
   "mutationFn"
 >) => {
   const queryClient = useQueryClient();
 
   return useMutation({
     mutationFn: async (data) => {
-      const formattedPayload = {
-        ...data,
-        amount: Number(data.amount),
-      };
-
-      const response = await api.post("/meals", formattedPayload);
+      const response = await api.post("/meals", data);
 
       return response.data;
     },
@@ -171,15 +159,11 @@ export const useDeleteMealMutation = ({
       }
 
       queryClient.invalidateQueries({
-        queryKey: weekProgressQueryKeys.list(),
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: dailyGoalQueryKeys.get(),
-      });
-
-      queryClient.invalidateQueries({
         queryKey: dailyGoalQueryKeys.getSummary(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: consumedMealsQueryKeys.list(),
       });
 
       if (onSuccess) {

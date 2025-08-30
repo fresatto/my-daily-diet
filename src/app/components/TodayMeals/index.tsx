@@ -5,12 +5,14 @@ import { Utensils } from "lucide-react";
 
 import { Card } from "@/components/Card";
 import { Button } from "@/components/ui/button";
-import { useMealsQuery } from "@/services/queries/meals";
 import { NewMealDialog } from "@/components/NewMealDialog";
 import { TodayMealsLoading } from "./components/Loading";
+import { useConsumedMealsQuery } from "@/services/queries/consumed-meals";
+import { MealItemList } from "@/components/MealItemList";
+import { SelectMealDialog } from "./components/SelectMealDialog";
 
 export const TodayMeals = () => {
-  const { data, error, isFetching } = useMealsQuery();
+  const { data, error, isFetching } = useConsumedMealsQuery();
 
   const shouldRenderEmptyState = !data?.meals || data?.meals?.length === 0;
 
@@ -35,24 +37,9 @@ export const TodayMeals = () => {
       );
     }
 
-    return data?.meals?.map((meal) => (
-      <div
-        data-testid="meal-card"
-        key={meal.id}
-        className="flex py-3 px-4 justify-between items-center rounded-lg bg-gray-100"
-      >
-        <div className="flex flex-col">
-          <h3 data-testid="meal-name" className="text-sm font-bold">
-            {meal.food.name}
-          </h3>
-          <small data-testid="meal-time">{meal.formattedTime}</small>
-        </div>
-        <div className="flex flex-col items-end text-xs">
-          <p className="font-bold">{meal.proteinConsumed}g</p>
-          <p>proteína</p>
-        </div>
-      </div>
-    ));
+    return data?.meals?.map((meal) => {
+      return <MealItemList key={meal.id} meal={meal} />;
+    });
   };
 
   return (
@@ -63,9 +50,14 @@ export const TodayMeals = () => {
       </div>
       {renderContent()}
 
+      <SelectMealDialog>
+        <Button>Selecionar refeição</Button>
+      </SelectMealDialog>
       {shouldRenderNewMealButton && (
         <NewMealDialog>
-          <Button data-testid="new-meal-button">Nova refeição</Button>
+          <Button data-testid="new-meal-button" variant="ghost">
+            Cadastrar nova refeição
+          </Button>
         </NewMealDialog>
       )}
     </Card.Container>

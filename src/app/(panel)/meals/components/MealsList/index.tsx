@@ -1,5 +1,7 @@
+"use client";
+
 import React, { useState } from "react";
-import { Calendar, TrashIcon } from "lucide-react";
+import { BicepsFlexed, Calendar, TrashIcon } from "lucide-react";
 
 import { CardListItem } from "@/components/CardListItem";
 import { Button } from "@/components/ui/button";
@@ -60,13 +62,10 @@ export const MealsList: React.FC = () => {
         <CardListItem.Container key={meal.id}>
           <CardListItem.Content>
             <CardListItem.Header>
-              <h3 className="text-md font-bold">{meal.food.name}</h3>
+              <h3 className="text-md font-bold">{meal.name}</h3>
               <CardListItem.Badge>
-                {meal.amount}
-                {meal.food.portion_type === "grams" ? "g" : " unidade"}
-              </CardListItem.Badge>
-              <CardListItem.Badge>
-                {meal.proteinConsumed}g proteínas
+                <BicepsFlexed />
+                {meal.total_protein}g
               </CardListItem.Badge>
             </CardListItem.Header>
             <CardListItem.Specs className="flex gap-2">
@@ -96,7 +95,9 @@ export const MealsList: React.FC = () => {
                 <DialogHeader>
                   <DialogTitle>Tem certeza?</DialogTitle>
                   <DialogDescription>
-                    Essa ação não pode ser desfeita.
+                    Ao excluir a refeição, todas as{" "}
+                    <strong>refeições consumidas</strong> relacionadas a ela
+                    serão apagadas. Essa ação não pode ser desfeita.
                   </DialogDescription>
                 </DialogHeader>
                 <DialogFooter>
