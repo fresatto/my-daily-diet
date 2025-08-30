@@ -1,13 +1,14 @@
 "use client";
 
 import React from "react";
-import { BicepsFlexed, Scale, Utensils } from "lucide-react";
+import { BicepsFlexed, Utensils } from "lucide-react";
 
 import { Card } from "@/components/Card";
 import { Button } from "@/components/ui/button";
 import { NewMealDialog } from "@/components/NewMealDialog";
 import { TodayMealsLoading } from "./components/Loading";
 import { useConsumedMealsQuery } from "@/services/queries/consumed-meals";
+import { MealItemList } from "@/components/MealItemList";
 
 export const TodayMeals = () => {
   const { data, error, isFetching } = useConsumedMealsQuery();
@@ -57,24 +58,7 @@ export const TodayMeals = () => {
             <ul>
               {meal.items.map((item) => (
                 <li key={item.food_id}>
-                  <div className="flex justify-between items-center gap-4">
-                    <span className="text-sm ">{item.food_name}</span>
-                    <div className="flex items-center justify-end gap-4  w-[140px]">
-                      <div className="flex items-center gap-1">
-                        <Scale size={12} />
-                        <span className="text-xs">
-                          {item.amount}
-                          {item.portion_type === "grams" ? "g" : "u"}
-                        </span>
-                      </div>
-                      <div className="flex items-center gap-1">
-                        <BicepsFlexed size={12} />
-                        <span className="text-xs">
-                          {item.calculated_protein}g
-                        </span>
-                      </div>
-                    </div>
-                  </div>
+                  <MealItemList food={item} />
                 </li>
               ))}
             </ul>
@@ -93,9 +77,12 @@ export const TodayMeals = () => {
       </div>
       {renderContent()}
 
+      <Button>Selecionar refeição</Button>
       {shouldRenderNewMealButton && (
         <NewMealDialog>
-          <Button data-testid="new-meal-button">Nova refeição</Button>
+          <Button data-testid="new-meal-button" variant="ghost">
+            Cadastrar nova refeição
+          </Button>
         </NewMealDialog>
       )}
     </Card.Container>
