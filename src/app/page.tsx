@@ -1,6 +1,6 @@
 import { DailyGoalCard } from "./components/DailyGoalCard";
 import { TodayMeals } from "./components/TodayMeals";
-import { WeekProgress } from "./components/WeekProgress";
+// import { WeekProgress } from "./components/WeekProgress";
 import { DashboardHeader } from "./components/DashboardHeader";
 
 export default async function Dashboard() {
@@ -9,7 +9,7 @@ export default async function Dashboard() {
       <DashboardHeader />
       <DailyGoalCard />
       <TodayMeals />
-      <WeekProgress />
+      {/* <WeekProgress /> */}
     </div>
   );
 }

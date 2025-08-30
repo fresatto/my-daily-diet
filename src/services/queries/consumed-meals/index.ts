@@ -2,6 +2,7 @@ import {
   useMutation,
   UseMutationOptions,
   useQuery,
+  useQueryClient,
 } from "@tanstack/react-query";
 import { format } from "date-fns-tz";
 
@@ -9,6 +10,7 @@ import { parseDateToLocalUTC } from "@/lib/date";
 import { api } from "@/services/api";
 import { MealsResponse } from "@/@types/meal";
 import { CreateConsumedMealRequest } from "@/@types/consumed-meals";
+import { dailyGoalQueryKeys } from "../daily-goal";
 
 export const consumedMealsQueryKeys = {
   base: () => ["consumed-meals"],
@@ -23,6 +25,7 @@ export const useConsumedMealsQuery = () => {
 
       return response.data;
     },
+    staleTime: 1000 * 60 * 5, // 5 minutes
     select: (data) => {
       try {
         const meals = data.meals.map((meal) => {
@@ -50,12 +53,15 @@ export const useConsumedMealsQuery = () => {
   });
 };
 
-export const useConsumedMealsMutation = (
-  options: Omit<
-    UseMutationOptions<unknown, unknown, CreateConsumedMealRequest, unknown>,
-    "mutationFn"
-  >
-) => {
+export const useConsumedMealsMutation = ({
+  onSuccess,
+  ...options
+}: Omit<
+  UseMutationOptions<unknown, unknown, CreateConsumedMealRequest, unknown>,
+  "mutationFn"
+>) => {
+  const queryClient = useQueryClient();
+
   return useMutation({
     mutationFn: async ({ meal_id }: CreateConsumedMealRequest) => {
       const response = await api.post("/consumed-meals", {
@@ -63,6 +69,19 @@ export const useConsumedMealsMutation = (
       });
 
       return response.data;
+    },
+    onSuccess: async (data, variables, context) => {
+      await queryClient.invalidateQueries({
+        queryKey: dailyGoalQueryKeys.getSummary(),
+      });
+
+      await queryClient.invalidateQueries({
+        queryKey: consumedMealsQueryKeys.list(),
+      });
+
+      if (onSuccess) {
+        onSuccess(data, variables, context);
+      }
     },
     ...options,
   });
