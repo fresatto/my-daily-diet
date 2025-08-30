@@ -9,11 +9,12 @@ import {
   useDailyGoalQuery,
   useDailyGoalSummaryQuery,
 } from "@/services/queries/daily-goal";
-import { useMealsQuery } from "@/services/queries/meals";
 import { DailyGoalCardLoading } from "./components/Loading";
+import { useConsumedMealsQuery } from "@/services/queries/consumed-meals";
 
 export const DailyGoalCard: React.FC = () => {
-  const { data: mealsData, ...mealsQuery } = useMealsQuery();
+  const { data: consumedMeals, ...consumedMealsQuery } =
+    useConsumedMealsQuery();
   const { data: dailyGoalData, ...dailyGoalQuery } = useDailyGoalQuery();
   const { data: dailyGoalSummaryData, ...dailyGoalSummaryQuery } =
     useDailyGoalSummaryQuery();
@@ -35,13 +36,15 @@ export const DailyGoalCard: React.FC = () => {
   const totalToAchieveGoalFormatted =
     Number(totalToAchieveGoal) > 0 ? `${totalToAchieveGoal}g` : 0;
 
-  const totalMeals = mealsData?.meals.length ?? 0;
+  const totalMeals = consumedMeals?.meals.length ?? 0;
 
   const failedToFetchData =
-    mealsQuery.error || dailyGoalQuery.error || dailyGoalSummaryQuery.error;
+    consumedMealsQuery.error ||
+    dailyGoalQuery.error ||
+    dailyGoalSummaryQuery.error;
 
   const loading =
-    mealsQuery.isFetching ||
+    consumedMealsQuery.isFetching ||
     dailyGoalQuery.isFetching ||
     dailyGoalSummaryQuery.isFetching;
 
