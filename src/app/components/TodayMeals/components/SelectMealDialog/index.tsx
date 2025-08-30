@@ -1,5 +1,6 @@
 "use client";
 
+import { Card } from "@/components/Card";
 import { MealItemList } from "@/components/MealItemList";
 import {
   Dialog,
@@ -16,15 +17,25 @@ type SelectMealDialogProps = {
 };
 
 export const SelectMealDialog = ({ children }: SelectMealDialogProps) => {
-  const { data } = useMealsQuery();
+  const { data, error } = useMealsQuery();
 
-  return (
-    <Dialog>
-      <DialogTrigger asChild>{children}</DialogTrigger>
-      <DialogContent>
-        <DialogHeader>
-          <DialogTitle>Selecione uma refeição</DialogTitle>
-        </DialogHeader>
+  const isEmpty = data?.meals.length === 0;
+
+  const renderContent = () => {
+    if (error) {
+      return <Card.Error title="Erro ao carregar refeições." />;
+    }
+
+    if (isEmpty) {
+      return (
+        <p className="text-sm text-gray-500">
+          Nenhuma refeição salva. Cadastre uma refeição para selecionar.
+        </p>
+      );
+    }
+
+    return (
+      <>
         <p className="text-sm text-gray-500">
           Selecione uma das <strong>refeições salvas</strong> para registrar o
           consumo.
@@ -42,6 +53,19 @@ export const SelectMealDialog = ({ children }: SelectMealDialogProps) => {
             );
           })}
         </div>
+      </>
+    );
+  };
+
+  return (
+    <Dialog>
+      <DialogTrigger asChild>{children}</DialogTrigger>
+      <DialogContent>
+        <DialogHeader>
+          <DialogTitle>Selecione uma refeição</DialogTitle>
+        </DialogHeader>
+
+        {renderContent()}
       </DialogContent>
     </Dialog>
   );
