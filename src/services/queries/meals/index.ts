@@ -13,6 +13,7 @@ import { getTimeZone, parseDateToLocalUTC } from "@/lib/date";
 import { weekProgressQueryKeys } from "../week-progress";
 import { dailyGoalQueryKeys } from "../daily-goal";
 import { Meal, MealsResponse } from "@/@types/meal";
+import { consumedMealsQueryKeys } from "../consumed-meals";
 
 type MealsQueryFilters = {
   startDate: string;
@@ -158,15 +159,11 @@ export const useDeleteMealMutation = ({
       }
 
       queryClient.invalidateQueries({
-        queryKey: weekProgressQueryKeys.list(),
-      });
-
-      queryClient.invalidateQueries({
-        queryKey: dailyGoalQueryKeys.get(),
-      });
-
-      queryClient.invalidateQueries({
         queryKey: dailyGoalQueryKeys.getSummary(),
+      });
+
+      queryClient.invalidateQueries({
+        queryKey: consumedMealsQueryKeys.list(),
       });
 
       if (onSuccess) {
