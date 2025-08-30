@@ -5,7 +5,7 @@ import {
 } from "@tanstack/react-query";
 import { format } from "date-fns-tz";
 
-import { getTimeZone, parseDateToLocalUTC } from "@/lib/date";
+import { parseDateToLocalUTC } from "@/lib/date";
 import { api } from "@/services/api";
 import { MealsResponse } from "@/@types/meal";
 import { CreateConsumedMealRequest } from "@/@types/consumed-meals";
@@ -16,18 +16,10 @@ export const consumedMealsQueryKeys = {
 };
 
 export const useConsumedMealsQuery = () => {
-  const startDate = format(new Date(), "yyyy-MM-dd");
-  const timezone = getTimeZone();
-
   return useQuery({
     queryKey: consumedMealsQueryKeys.list(),
     queryFn: async () => {
-      const response = await api.get<MealsResponse>("/consumed-meals", {
-        params: {
-          startDate,
-          timezone,
-        },
-      });
+      const response = await api.get<MealsResponse>("/consumed-meals");
 
       return response.data;
     },
