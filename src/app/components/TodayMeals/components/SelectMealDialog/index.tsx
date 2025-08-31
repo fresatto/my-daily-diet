@@ -1,6 +1,9 @@
 "use client";
 
 import { Loader2 } from "lucide-react";
+import { useState } from "react";
+import { toast } from "sonner";
+
 import { Card } from "@/components/Card";
 import { MealItemList } from "@/components/MealItemList";
 import {
@@ -11,20 +14,28 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { useConsumedMealsMutation } from "@/services/queries/consumed-meals";
-
 import { useMealsQuery } from "@/services/queries/meals";
+import { useDialog } from "@/hooks/useDialog";
 
 type SelectMealDialogProps = {
   children: React.ReactNode;
 };
 
 export const SelectMealDialog = ({ children }: SelectMealDialogProps) => {
+  const { open, handleOpenChange } = useDialog();
   const { data, error } = useMealsQuery();
   const {
     mutate: createConsumedMeal,
     variables,
     isPending,
-  } = useConsumedMealsMutation();
+  } = useConsumedMealsMutation({
+    onSuccess: () => {
+      handleOpenChange(false);
+    },
+    onError: () => {
+      toast.error("Erro ao registrar.");
+    },
+  });
 
   const isEmpty = data?.meals.length === 0;
 
@@ -76,7 +87,7 @@ export const SelectMealDialog = ({ children }: SelectMealDialogProps) => {
   };
 
   return (
-    <Dialog>
+    <Dialog open={open} onOpenChange={handleOpenChange}>
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
