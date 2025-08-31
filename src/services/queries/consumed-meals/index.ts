@@ -53,13 +53,14 @@ export const useConsumedMealsQuery = () => {
   });
 };
 
-export const useConsumedMealsMutation = ({
-  onSuccess,
-  ...options
-}: Omit<
-  UseMutationOptions<unknown, unknown, CreateConsumedMealRequest, unknown>,
-  "mutationFn"
->) => {
+export const useConsumedMealsMutation = (
+  params?: Omit<
+    UseMutationOptions<unknown, unknown, CreateConsumedMealRequest, unknown>,
+    "mutationFn"
+  >
+) => {
+  const { onSuccess, ...options } = params || {};
+
   const queryClient = useQueryClient();
 
   return useMutation({
