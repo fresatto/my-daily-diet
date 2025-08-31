@@ -12,7 +12,7 @@ import { CreateMealSchema } from "@/components/NewMealDialog/schema";
 import { getTimeZone, parseDateToLocalUTC } from "@/lib/date";
 import { weekProgressQueryKeys } from "../week-progress";
 import { dailyGoalQueryKeys } from "../daily-goal";
-import { Meal, MealsResponse } from "@/@types/meal";
+import { FormattedMeal, Meal, MealsResponse } from "@/@types/meal";
 import { consumedMealsQueryKeys } from "../consumed-meals";
 
 type MealsQueryFilters = {
@@ -65,7 +65,7 @@ export const useMealsQuery = (filters?: MealsQueryFilters) => {
             formattedAmount,
             formattedTime,
             created_at: format(localDate, "dd/MM/yyyy HH:mm"),
-          };
+          } as FormattedMeal;
         });
 
         return {

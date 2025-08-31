@@ -16,6 +16,12 @@ export type Meal = {
   items: MealItem[];
 };
 
+export type FormattedMeal = Meal & {
+  formattedAmount: string;
+  formattedTime: string;
+  created_at: string;
+};
+
 export type MealsResponse = {
   meals: Meal[];
 };
