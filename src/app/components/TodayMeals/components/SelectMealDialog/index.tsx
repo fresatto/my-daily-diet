@@ -15,6 +15,7 @@ import {
 import { useConsumedMealsMutation } from "@/services/queries/consumed-meals";
 import { useMealsQuery } from "@/services/queries/meals";
 import { useDialog } from "@/hooks/useDialog";
+import { MealList } from "@/components/MealList";
 
 type SelectMealDialogProps = {
   children: React.ReactNode;
@@ -62,24 +63,26 @@ export const SelectMealDialog = ({ children }: SelectMealDialogProps) => {
               o consumo.
             </p>
 
-            <div className="max-h-[400px] overflow-y-auto flex flex-col gap-2 hide-scrollbar">
-              {data?.meals.map((meal) => {
-                const isLoading = variables?.meal_id === meal.id && isPending;
+            <div className="max-h-[400px] overflow-y-auto hide-scrollbar">
+              {data?.meals && (
+                <MealList.List
+                  meals={data.meals}
+                  renderMeal={(meal) => {
+                    const isLoading =
+                      variables?.meal_id === meal.id && isPending;
 
-                return (
-                  <button
-                    key={meal.id}
-                    className="cursor-pointer  hover:brightness-90 transition-all"
-                    onClick={() => handleSelectMeal(meal.id)}
-                  >
-                    {isLoading ? (
-                      <Loader2 className="animate-spin" />
-                    ) : (
-                      <MealItemList meal={meal} />
-                    )}
-                  </button>
-                );
-              })}
+                    return (
+                      <button
+                        key={meal.id}
+                        className="cursor-pointer  hover:brightness-90 transition-all"
+                        onClick={() => handleSelectMeal(meal.id)}
+                      >
+                        <MealItemList meal={meal} isLoading={isLoading} />
+                      </button>
+                    );
+                  }}
+                />
+              )}
             </div>
           </>
         )}

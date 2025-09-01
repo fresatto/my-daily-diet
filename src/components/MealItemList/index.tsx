@@ -2,9 +2,11 @@ import React from "react";
 import { BicepsFlexed, Scale } from "lucide-react";
 
 import { FormattedMeal, MealItem } from "@/@types/meal";
+import { Spinner } from "../Spinner";
 
 type MealItemListProps = {
   meal: FormattedMeal;
+  isLoading?: boolean;
 };
 
 type FoodItemProps = {
@@ -32,7 +34,10 @@ const FoodItem = ({ item }: FoodItemProps) => {
   );
 };
 
-export const MealItemList: React.FC<MealItemListProps> = ({ meal }) => {
+export const MealItemList: React.FC<MealItemListProps> = ({
+  meal,
+  isLoading,
+}) => {
   const totalProtein = Number(meal.total_protein);
 
   return (
@@ -41,25 +46,29 @@ export const MealItemList: React.FC<MealItemListProps> = ({ meal }) => {
       key={meal.id}
       className="flex py-3 px-4 justify-between items-center rounded-lg bg-gray-100"
     >
-      <div className="flex flex-col gap-2 w-full">
-        <div className="flex items-center justify-between">
-          <h3 data-testid="meal-name" className="text-sm font-bold">
-            {meal.name}
-          </h3>
-          <div className="flex items-center gap-1 text-xs">
-            <BicepsFlexed size={14} />
-            <span className="text-xs">{totalProtein}g</span>
+      {isLoading ? (
+        <Spinner />
+      ) : (
+        <div className="flex flex-col gap-2 w-full">
+          <div className="flex items-center justify-between">
+            <h3 data-testid="meal-name" className="text-sm font-bold">
+              {meal.name}
+            </h3>
+            <div className="flex items-center gap-1 text-xs">
+              <BicepsFlexed size={14} />
+              <span className="text-xs">{totalProtein}g</span>
+            </div>
           </div>
+          <ul>
+            {meal.items.map((item) => (
+              <li key={item.food_id}>
+                <FoodItem item={item} />
+              </li>
+            ))}
+          </ul>
+          <small data-testid="meal-time">{meal.formattedTime}</small>
         </div>
-        <ul>
-          {meal.items.map((item) => (
-            <li key={item.food_id}>
-              <FoodItem item={item} />
-            </li>
-          ))}
-        </ul>
-        <small data-testid="meal-time">{meal.formattedTime}</small>
-      </div>
+      )}
     </div>
   );
 };
