@@ -36,19 +36,11 @@ const getMealsStartDate = (filters?: MealsQueryFilters) => {
   return format(new Date(), "yyyy-MM-dd");
 };
 
-export const useMealsQuery = (filters?: MealsQueryFilters) => {
-  const startDate = getMealsStartDate(filters);
-  const timezone = getTimeZone();
-
+export const useMealsQuery = () => {
   return useQuery({
-    queryKey: mealsQueryKeys.list({ startDate }),
+    queryKey: mealsQueryKeys.list(),
     queryFn: async () => {
-      const response = await api.get<MealsResponse>("/meals", {
-        params: {
-          startDate,
-          timezone,
-        },
-      });
+      const response = await api.get<MealsResponse>("/meals");
 
       return response.data;
     },

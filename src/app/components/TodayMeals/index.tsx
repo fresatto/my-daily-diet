@@ -8,8 +8,8 @@ import { Button } from "@/components/ui/button";
 import { NewMealDialog } from "@/components/NewMealDialog";
 import { TodayMealsLoading } from "./components/Loading";
 import { useConsumedMealsQuery } from "@/services/queries/consumed-meals";
-import { MealItemList } from "@/components/MealItemList";
 import { SelectMealDialog } from "./components/SelectMealDialog";
+import { MealList } from "@/components/MealList";
 
 export const TodayMeals = () => {
   const { data, error, isFetching } = useConsumedMealsQuery();
@@ -37,9 +37,7 @@ export const TodayMeals = () => {
       );
     }
 
-    return data?.meals?.map((meal) => {
-      return <MealItemList key={meal.id} meal={meal} />;
-    });
+    return <MealList.List meals={data?.meals} />;
   };
 
   return (

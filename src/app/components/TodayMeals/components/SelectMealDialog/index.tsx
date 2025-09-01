@@ -21,7 +21,7 @@ export const SelectMealDialog = ({ children }: SelectMealDialogProps) => {
 
   const { open, handleOpenChange } = useDialog();
 
-  const isEmpty = mealsData?.meals.length === 0;
+  const isEmpty = !mealsData?.meals || mealsData?.meals.length === 0;
 
   return (
     <Dialog open={open} onOpenChange={handleOpenChange}>
@@ -38,6 +38,7 @@ export const SelectMealDialog = ({ children }: SelectMealDialogProps) => {
         )}
         {!error && !isEmpty && (
           <SelectMealDialogMealsList
+            meals={mealsData.meals}
             onSuccessCreateConsumedMeal={() => handleOpenChange(false)}
           />
         )}
@@ -47,10 +48,9 @@ export const SelectMealDialog = ({ children }: SelectMealDialogProps) => {
 };
 
 function SelectMealDialogMealsList({
+  meals,
   onSuccessCreateConsumedMeal,
 }: SelectMealDialogMealsListProps) {
-  const { data: mealsData } = useMealsQuery();
-
   const {
     mutate: createConsumedMeal,
     variables,
@@ -68,24 +68,22 @@ function SelectMealDialogMealsList({
       </p>
 
       <div className="max-h-[400px] overflow-y-auto hide-scrollbar">
-        {mealsData?.meals && (
-          <MealList.List
-            meals={mealsData.meals}
-            renderMeal={(meal) => {
-              const isLoading = variables?.meal_id === meal.id && isPending;
+        <MealList.List
+          meals={meals}
+          renderMeal={(meal) => {
+            const isLoading = variables?.meal_id === meal.id && isPending;
 
-              return (
-                <button
-                  key={meal.id}
-                  className="cursor-pointer  hover:brightness-90 transition-all"
-                  onClick={() => createConsumedMeal({ meal_id: meal.id })}
-                >
-                  <MealItemList meal={meal} isLoading={isLoading} />
-                </button>
-              );
-            }}
-          />
-        )}
+            return (
+              <button
+                key={meal.id}
+                className="cursor-pointer  hover:brightness-90 transition-all"
+                onClick={() => createConsumedMeal({ meal_id: meal.id })}
+              >
+                <MealItemList meal={meal} isLoading={isLoading} />
+              </button>
+            );
+          }}
+        />
       </div>
     </>
   );
