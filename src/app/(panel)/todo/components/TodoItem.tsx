@@ -3,13 +3,15 @@ import { cn } from "@/lib/utils";
 
 import { Button } from "@/components/ui/button";
 import { Todo } from "../types";
+import { memo } from "react";
 
 type TodoItemProps = {
   todo: Todo;
   onToggleTodo: (id: string) => void;
 };
 
-export const TodoItem = ({ todo, onToggleTodo }: TodoItemProps) => {
+export const TodoItemBase = ({ todo, onToggleTodo }: TodoItemProps) => {
+  console.log("renderizou todo item" + todo.title);
   return (
     <div className="flex items-center justify-between">
       <h1 className={cn(todo.done && "line-through text-green-600")}>
@@ -26,3 +28,5 @@ export const TodoItem = ({ todo, onToggleTodo }: TodoItemProps) => {
     </div>
   );
 };
+
+export const TodoItem = memo(TodoItemBase);

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { Todo } from "../types";
 
 const mockedTodos: Todo[] = [
@@ -20,13 +20,13 @@ export const useTodos = () => {
     setTodos([...todos, { id: generateId(), title, done: false }]);
   };
 
-  const handleToggleTodo = (id: string) => {
-    setTodos(
-      todos.map((todo) =>
+  const handleToggleTodo = useCallback((id: string) => {
+    setTodos((oldTodos) =>
+      oldTodos.map((todo) =>
         todo.id === id ? { ...todo, done: !todo.done } : todo
       )
     );
-  };
+  }, []);
 
   return { todos, handleAddTodo, handleToggleTodo };
 };
