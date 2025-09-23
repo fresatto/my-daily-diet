@@ -9,10 +9,10 @@ import { toast } from "sonner";
 
 import { api } from "@/services/api";
 import { CreateMealSchema } from "@/components/NewMealDialog/schema";
-import { getTimeZone, parseDateToLocalUTC } from "@/lib/date";
+import { parseDateToLocalUTC } from "@/lib/date";
 import { weekProgressQueryKeys } from "../week-progress";
 import { dailyGoalQueryKeys } from "../daily-goal";
-import { Meal, MealsResponse } from "@/@types/meal";
+import { FormattedMeal, Meal, MealsResponse } from "@/@types/meal";
 import { consumedMealsQueryKeys } from "../consumed-meals";
 
 type MealsQueryFilters = {
@@ -36,19 +36,11 @@ const getMealsStartDate = (filters?: MealsQueryFilters) => {
   return format(new Date(), "yyyy-MM-dd");
 };
 
-export const useMealsQuery = (filters?: MealsQueryFilters) => {
-  const startDate = getMealsStartDate(filters);
-  const timezone = getTimeZone();
-
+export const useMealsQuery = () => {
   return useQuery({
-    queryKey: mealsQueryKeys.list({ startDate }),
+    queryKey: mealsQueryKeys.list(),
     queryFn: async () => {
-      const response = await api.get<MealsResponse>("/meals", {
-        params: {
-          startDate,
-          timezone,
-        },
-      });
+      const response = await api.get<MealsResponse>("/meals");
 
       return response.data;
     },
@@ -65,7 +57,7 @@ export const useMealsQuery = (filters?: MealsQueryFilters) => {
             formattedAmount,
             formattedTime,
             created_at: format(localDate, "dd/MM/yyyy HH:mm"),
-          };
+          } as FormattedMeal;
         });
 
         return {
@@ -135,14 +127,13 @@ export const useDeleteMealMutation = ({
 
   return useMutation({
     mutationFn: async (id: string) => {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       await api.delete(`/meals/${id}`);
 
       return id;
     },
     onSuccess: (deletedMealId, data, context) => {
-      const startDate = getMealsStartDate();
-
-      const listMealsQueryKey = mealsQueryKeys.list({ startDate });
+      const listMealsQueryKey = mealsQueryKeys.list();
 
       const oldData =
         queryClient.getQueryData<MealsResponse>(listMealsQueryKey);

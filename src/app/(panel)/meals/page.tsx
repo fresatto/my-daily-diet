@@ -1,31 +1,43 @@
-import { Suspense } from "react";
-import { PlusIcon } from "lucide-react";
-
-import { Button } from "@/components/ui/button";
+"use client";
 
 import { PageHeader } from "@/components/PageHeader";
-import { NewMealDialog } from "@/components/NewMealDialog";
-import { ListLoading } from "@/components/ListLoading";
 import { MealsList } from "./components/MealsList";
+import { useDeleteMealMutation, useMealsQuery } from "@/services/queries/meals";
+import { MealListItem } from "./components/MealListItem";
+import { MealListItemAction } from "./components/MealListItemAction";
+import { toast } from "sonner";
 
 export default function Meals() {
+  const { data } = useMealsQuery();
+  const {
+    mutate: deleteMeal,
+    isPending,
+    variables: mealId,
+  } = useDeleteMealMutation({
+    onSuccess: () => {
+      toast.success("Refeição deletada com sucesso!");
+    },
+  });
   return (
     <div>
-      <PageHeader
-        title="Refeições cadastradas"
-        action={
-          <NewMealDialog>
-            <Button>
-              <PlusIcon className="w-4 h-4" />
-              Cadastrar refeição
-            </Button>
-          </NewMealDialog>
-        }
-      />
+      <PageHeader title="Refeições cadastradas" />
 
-      <Suspense fallback={<ListLoading />}>
-        <MealsList />
-      </Suspense>
+      {data && (
+        <MealsList
+          meals={data.meals}
+          renderMeal={(meal) => (
+            <MealListItem
+              meal={meal}
+              action={
+                <MealListItemAction
+                  onConfirmDeleteMeal={() => deleteMeal(meal.id)}
+                  loading={isPending && mealId === meal.id}
+                />
+              }
+            />
+          )}
+        />
+      )}
     </div>
   );
 }
