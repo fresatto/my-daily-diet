@@ -2,7 +2,7 @@
 
 import React from "react";
 
-import { FormattedMeal } from "@/@types/dtos";
+import { FormattedMeal } from "@/@types/meal";
 
 type MealsListProps = {
   meals: FormattedMeal[];
