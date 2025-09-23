@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { memo, useState } from "react";
 
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -7,13 +7,15 @@ type TodoFormProps = {
   onSubmitTodo: (todo: string) => void;
 };
 
-export const TodoForm = ({ onSubmitTodo }: TodoFormProps) => {
+const TodoFormBase = ({ onSubmitTodo }: TodoFormProps) => {
   const [todoInputValue, setTodoInputValue] = useState("");
 
   const handleSubmitTodo = () => {
     onSubmitTodo(todoInputValue);
     setTodoInputValue("");
   };
+
+  console.log("renderizou todo form");
 
   return (
     <>
@@ -26,3 +28,5 @@ export const TodoForm = ({ onSubmitTodo }: TodoFormProps) => {
     </>
   );
 };
+
+export const TodoForm = memo(TodoFormBase);

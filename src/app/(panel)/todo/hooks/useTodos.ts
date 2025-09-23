@@ -16,9 +16,12 @@ export const useTodos = () => {
     return Math.random().toString(36).substring(2, 15);
   };
 
-  const handleAddTodo = (title: string) => {
-    setTodos([...todos, { id: generateId(), title, done: false }]);
-  };
+  const handleAddTodo = useCallback((title: string) => {
+    setTodos((oldTodos) => [
+      ...oldTodos,
+      { id: generateId(), title, done: false },
+    ]);
+  }, []);
 
   const handleToggleTodo = useCallback((id: string) => {
     setTodos((oldTodos) =>
