@@ -9,7 +9,7 @@ import { toast } from "sonner";
 
 import { api } from "@/services/api";
 import { CreateMealSchema } from "@/components/NewMealDialog/schema";
-import { getTimeZone, parseDateToLocalUTC } from "@/lib/date";
+import { parseDateToLocalUTC } from "@/lib/date";
 import { weekProgressQueryKeys } from "../week-progress";
 import { dailyGoalQueryKeys } from "../daily-goal";
 import { FormattedMeal, Meal, MealsResponse } from "@/@types/meal";
@@ -127,14 +127,13 @@ export const useDeleteMealMutation = ({
 
   return useMutation({
     mutationFn: async (id: string) => {
+      await new Promise((resolve) => setTimeout(resolve, 5000));
       await api.delete(`/meals/${id}`);
 
       return id;
     },
     onSuccess: (deletedMealId, data, context) => {
-      const startDate = getMealsStartDate();
-
-      const listMealsQueryKey = mealsQueryKeys.list({ startDate });
+      const listMealsQueryKey = mealsQueryKeys.list();
 
       const oldData =
         queryClient.getQueryData<MealsResponse>(listMealsQueryKey);
